@@ -27,7 +27,7 @@ Selected  input  is written in the same order that it is read, and is written ex
 
 `N:M:S` - `N` is start, `M` is end, `S` is step. 
 
-Defaults - `N` = 1, `M` = last character, `S` = 1
+Defaults - `N` = 1, `M` = last character, `S` = 1. `N < M` !
 
 Return all bytes, characters or fields in the range, defined by `N`, `M` and `S`
 
