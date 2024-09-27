@@ -7,21 +7,33 @@ pub mod cut {
         delimiter: char,
     ) -> Vec<&str> {
         let (start, end, step) = range;
+        
+        if step == 0 {
+            return vec![];
+        }
 
+        // Do the cutting, and get `n`
         let items: Vec<&str> = line.split(delimiter).collect();
         let n = items.len() as i32;
-        
+
         let is_start_within_bounds = -n <= start && start < n;
         let is_end_within_bounds = -n <= end && end != 0 && end < n; 
 
-        if !(is_start_within_bounds && is_end_within_bounds && start < end) {
+        if !(is_start_within_bounds && is_end_within_bounds) {
+            return vec![];
+        }
+
+        let actual_start = handle_negative_index(start, n);
+        let actual_end = handle_negative_index(end, n);
+
+        if actual_start >= actual_end {
             return vec![];
         }
 
         let is_reversed = step < 0;
+        let actual_step = step.abs() as usize;
 
-        let indexes_to_get: HashSet<usize> =
-            calculate_indexes_to_filter(start, end, step, n);
+        let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
 
         let mut result: Vec<&str> = items
             .iter()
@@ -37,20 +49,13 @@ pub mod cut {
         result
     }
 
-    fn calculate_indexes_to_filter(start: i32, end: i32, step: i32, n: i32) -> HashSet<usize> {
-        let actual_start = if start > 0 {
-            start as usize
-        } else {
-            (n + start) as usize
-        };
-        let actual_end = if end > 0 {
-            end as usize
-        } else {
-            (n + end) as usize
-        };
-        let actual_step = step.abs() as usize;
-
-        (actual_start..actual_end).step_by(actual_step).collect()
+    fn handle_negative_index(index: i32, n: i32) -> usize {
+        if index >= 0 {
+            index as usize
+        }
+        else {
+            (n + index) as usize
+        } 
     }
 }
 
@@ -237,7 +242,7 @@ mod test {
     #[test]
     fn test_22_start_c_end_b_step_a() {
         // start: [0; end), end: (-n; 0), step = 1
-        base_test(START_C, END_B, STEP_A, vec!["second", "third", "fourth"])
+        base_test(START_C, END_B, STEP_A, vec!["third", "fourth"])
     }
 
     #[test]
@@ -249,7 +254,7 @@ mod test {
     #[test]
     fn test_24_start_c_end_d_step_a() {
         // start:[0; end), end: (0; n], step = 1
-        base_test(START_C, END_D, STEP_A, vec!["second", "third"])
+        base_test(START_C, END_D, STEP_A, vec!["third"])
     }
 
     #[test]
@@ -267,7 +272,7 @@ mod test {
     #[test]
     fn test_27_start_c_end_b_step_b() {
         // start: [0; end), end: (-n; 0), step = -1
-        base_test(START_C, END_B, STEP_B, vec!["fourth", "third", "second"])
+        base_test(START_C, END_B, STEP_B, vec!["fourth", "third"])
     }
 
     #[test]
@@ -279,7 +284,7 @@ mod test {
     #[test]
     fn test_29_start_c_end_d_step_b() {
         // start: [0; end), end: (0; n], step = -1
-        base_test(START_C, END_D, STEP_B, vec!["third", "second"])
+        base_test(START_C, END_D, STEP_B, vec!["third"])
     }
 
     #[test]
@@ -428,7 +433,7 @@ mod test {
     #[test]
     fn test_53_start_c_end_b_step_c() {
         // start: [-n; 0), end: (-n; 0), step = 2
-        base_test(START_C, END_B, STEP_C, vec!["third", "fourth"])
+        base_test(START_C, END_B, STEP_C, vec!["third"])
     }
     
     #[test]
@@ -453,7 +458,7 @@ mod test {
     #[test]
     fn test_57_start_c_end_b_step_d() {
         // start: [-n; 0), end: (-n; 0), step = -2
-        base_test(START_C, END_B, STEP_D, vec!["fourth", "third"])
+        base_test(START_C, END_B, STEP_D, vec!["third"])
     }
     
     #[test]
