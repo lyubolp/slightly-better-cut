@@ -1,7 +1,10 @@
 mod cut;
 mod cli;
 
-use clap::Parser;
+use std::fs::File;
+use std::io::{self, BufRead};
+
+use cut::cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
 
 fn main() {
     let args = cli::build_cli().get_matches();
@@ -9,14 +12,25 @@ fn main() {
     let default_file = String::from("-");
     let file_path = args.get_one::<String>("FILE").unwrap_or(&default_file);
 
-    println!("Splitting {} on:", file_path);
+    if *file_path == default_file {
+        unimplemented!()
+    }
 
-    let actions = (args.get_flag("bytes"), args.get_flag("characters"), args.get_one::<String>("fields"));
+    let file = File::open(file_path).unwrap();
+    let reader = io::BufReader::new(file);
 
-    match actions {
-        (true, _, _) => println!("Bytes"),
-        (_, true, _) => println!("Characters"),
-        (_, _, Some(fields)) => println!("Fields {}", fields),
+    let lines: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+
+    let actions = (args.get_one::<String>("bytes"), args.get_one::<String>("characters"), args.get_one::<String>("fields"));
+
+    println!("{:?}", actions);
+    let output = match actions {
+        (Some(fields), _, _) => println!("Bytes {}", fields),
+        (_, Some(fields), _) => println!("Characters {}", fields),
+        (_, _, Some(fields)) => {
+            println!("Fields {}", fields);
+            //cut_line_with_delimiter(line, range, delimiter)
+        }
         _ => unreachable!()
     };
 }
