@@ -7,7 +7,7 @@ pub mod cut {
         delimiter: char,
     ) -> Vec<&str> {
         let (start, end, step) = range;
-        
+
         if step == 0 {
             return vec![];
         }
@@ -17,7 +17,7 @@ pub mod cut {
         let n = items.len() as i32;
 
         let is_start_within_bounds = -n <= start && start < n;
-        let is_end_within_bounds = -n <= end && end != 0 && end < n; 
+        let is_end_within_bounds = -n <= end && end != 0 && end < n;
 
         if !(is_start_within_bounds && is_end_within_bounds) {
             return vec![];
@@ -33,7 +33,8 @@ pub mod cut {
         let is_reversed = step < 0;
         let actual_step = step.abs() as usize;
 
-        let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+        let indexes_to_get: HashSet<usize> =
+            (actual_start..actual_end).step_by(actual_step).collect();
 
         let mut result: Vec<&str> = items
             .iter()
@@ -52,10 +53,17 @@ pub mod cut {
     fn handle_negative_index(index: i32, n: i32) -> usize {
         if index >= 0 {
             index as usize
-        }
-        else {
+        } else {
             (n + index) as usize
-        } 
+        }
+    }
+
+    pub fn cut_line_with_bytes(line: &str, range: (i32, i32, i32)) -> Vec<&str> {
+        unimplemented!()
+    }
+
+    pub fn cut_line_with_characters(line: &str, range: (i32, i32, i32)) -> Vec<&str> {
+        unimplemented!()
     }
 }
 
@@ -423,7 +431,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = 2
         base_test(START_B, END_B, STEP_C, vec!["second", "fourth"])
     }
-    
+
     #[test]
     fn test_52_start_b_end_d_step_c() {
         // start: [-n; 0), end: (-n; 0), step = 2
@@ -435,7 +443,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = 2
         base_test(START_C, END_B, STEP_C, vec!["third"])
     }
-    
+
     #[test]
     fn test_54_start_c_end_d_step_c() {
         // start: [-n; 0), end: (-n; 0), step = 2
@@ -448,7 +456,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = -2
         base_test(START_B, END_B, STEP_D, vec!["fourth", "second"])
     }
-    
+
     #[test]
     fn test_56_start_b_end_d_step_d() {
         // start: [-n; 0), end: (-n; 0), step = -2
@@ -460,7 +468,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = -2
         base_test(START_C, END_B, STEP_D, vec!["third"])
     }
-    
+
     #[test]
     fn test_58_start_c_end_d_step_d() {
         // start: [-n; 0), end: (-n; 0), step = -2
@@ -473,7 +481,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = 0
         base_test(START_B, END_B, STEP_E, vec![])
     }
-    
+
     #[test]
     fn test_60_start_b_end_d_step_e() {
         // start: [-n; 0), end: (-n; 0), step = 0
@@ -485,7 +493,7 @@ mod test {
         // start: [-n; 0), end: (-n; 0), step = 0
         base_test(START_C, END_B, STEP_E, vec![])
     }
-    
+
     #[test]
     fn test_62_start_c_end_d_step_e() {
         // start: [-n; 0), end: (-n; 0), step = 0
@@ -502,5 +510,4 @@ mod test {
         // Assert
         assert_eq!(expected_content, actual_content);
     }
-
 }
