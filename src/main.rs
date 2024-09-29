@@ -1,10 +1,12 @@
 mod cut;
 mod cli;
+mod range_parser;
 
 use std::fs::File;
 use std::io::{self, BufRead};
 
 use cut::cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
+use range_parser::parse_range;
 
 fn main() {
     let args = cli::build_cli().get_matches();
@@ -29,6 +31,7 @@ fn main() {
         (_, Some(fields), _) => println!("Characters {}", fields),
         (_, _, Some(fields)) => {
             println!("Fields {}", fields);
+            let range = parse_range(fields);
             //cut_line_with_delimiter(line, range, delimiter)
         }
         _ => unreachable!()
