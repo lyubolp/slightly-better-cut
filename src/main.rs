@@ -31,7 +31,7 @@ fn main() {
         (_, Some(fields), _) => println!("Characters {}", fields),
         (_, _, Some(fields)) => {
             println!("Fields {}", fields);
-            let range = parse_range(fields);
+            // let range = parse_range(fields);
             //cut_line_with_delimiter(line, range, delimiter)
         }
         _ => unreachable!()
