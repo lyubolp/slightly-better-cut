@@ -32,8 +32,10 @@ mod test {
     :positive
     ::positive
     positive:negative:positive, with two digits
+    positive::positive
 
     Bad weather scenarios
+    Basicaly
 
     */
 
@@ -129,8 +131,8 @@ mod test {
 
     #[test]
     fn test_08_negative() {
-        let fields = String::from("") + NEGATIVE_M;
-        let expected_range = Ok((NEGATIVE_M_PARSED, NEGATIVE_M_PARSED + 1, DEFAULT_STEP));
+        let fields = String::from("") + NEGATIVE_N;
+        let expected_range = Ok((NEGATIVE_N_PARSED, NEGATIVE_M_PARSED + 1, DEFAULT_STEP));
 
         base_test(&fields, expected_range);
     }
@@ -164,6 +166,14 @@ mod test {
             NEGATIVE_M_DOUBLE_DIGIT_PARSED,
             POSITIVE_S_DOUBLE_DIGIT_PARSED,
         ));
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_12_positive_separator_separator_positive() {
+        let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
+        let expected_range = Ok((POSITIVE_N_PARSED, DEFAULT_END, POSITIVE_S_PARSED));
 
         base_test(&fields, expected_range);
     }
