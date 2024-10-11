@@ -1,13 +1,52 @@
 use regex::Regex;
 
 pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
-    let re = Regex::new(r"(-{0,1}[0-9]+):{0,1}(-{0,1}[0-9]+)*:{0,1}(-{0,1}[0-9]+)*");
+    let re = Regex::new(r"(-{0,1}[0-9]+)*(:){0,1}(-{0,1}[0-9]+)*(:){0,1}(-{0,1}[0-9]+)*");
+    let error_message = String::from("Can't build regex");
 
     match re {
         Ok(reg) => {
-            unimplemented!()
+            if !reg.is_match(&fields) {
+                Err(error_message)
+            } else {
+                match reg.captures(fields) {
+                    Some(captures) => {
+                        // TODO - Consider going to named capture groups
+                        let is_first_colon_passed = captures.get(2).is_some();
+
+                        let default_start = 0;
+                        let raw_start = captures
+                            .get(1)
+                            .map_or(Ok(default_start), |m| m.as_str().parse::<i32>());
+
+                        if !is_first_colon_passed {
+                            match raw_start {
+                                Ok(start) => Ok((start, start + 1, 1)),
+                                _ => Err(error_message),
+                            }
+                        } else {
+                            let default_end = n;
+                            let default_step = 1;
+
+                            let raw_end = captures
+                                .get(3)
+                                .map_or(Ok(default_end), |m| m.as_str().parse::<i32>());
+
+                            let raw_step = captures
+                                .get(5)
+                                .map_or(Ok(default_step), |m| m.as_str().parse::<i32>());
+
+                            match (raw_start, raw_end, raw_step) {
+                                (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
+                                _ => Err(error_message),
+                            }
+                        }
+                    }
+                    None => Err(error_message),
+                }
+            }
         }
-        Err(_) => Err(String::from("Can't build regex")),
+        Err(_) => Err(error_message),
     }
 }
 
@@ -71,6 +110,8 @@ mod test {
     static DEFAULT_END: i32 = SAMPLE_LENGTH;
     static DEFAULT_STEP: i32 = 1;
 
+    static EXPECTED_ERROR: &str = "Can't build regex";
+
     #[test]
     fn test_01_positive_positive_positive() {
         let fields =
@@ -132,7 +173,7 @@ mod test {
     #[test]
     fn test_08_negative() {
         let fields = String::from("") + NEGATIVE_N;
-        let expected_range = Ok((NEGATIVE_N_PARSED, NEGATIVE_M_PARSED + 1, DEFAULT_STEP));
+        let expected_range = Ok((NEGATIVE_N_PARSED, NEGATIVE_N_PARSED + 1, DEFAULT_STEP));
 
         base_test(&fields, expected_range);
     }
@@ -178,6 +219,37 @@ mod test {
         base_test(&fields, expected_range);
     }
 
+    #[test]
+    fn test_13_empty_string() {
+        let fields = String::from("");
+        let expected_range = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_14_start_with_alphabetical() {
+        let fields = String::from("asd") + SEPARATOR + POSITIVE_M;
+        let expected_range = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_15_ends_with_alphabetical() {
+        let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + "asd";
+        let expected_range = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_16_triple_separator() {
+        let fields = String::from("") + SEPARATOR + SEPARATOR + SEPARATOR;
+        let expected_range = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
     fn base_test(fields: &String, expected_range: Result<(i32, i32, i32), String>) {
         let actual_range = parse_range(fields, SAMPLE_LENGTH);
 
