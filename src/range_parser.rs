@@ -1,85 +1,65 @@
 use regex::Regex;
 
 pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
-    let groups: Vec<&str> = fields.split(":").collect();
     let error_message = String::from("Can't build regex");
+    if fields == "" {
+        return Err(error_message);
+    }
+
+    let groups: Vec<&str> = fields.split(":").collect();
 
     let colon_count = fields.match_indices(":").count();
 
-    if colon_count == 0 {
+    if colon_count < 3 {
         let raw_start = groups[0];
 
-        match raw_start.parse::<i32>() {
-            Ok(start) => Ok((start, start + 1, 1)),
+        let parsed_start = if raw_start != "" {
+            raw_start.parse::<i32>()
+        } else {
+            Ok(0)
+        };
+
+        let parsed_end = if colon_count != 0 {
+            get_parsed_end(&groups, n)
+        } else {
+            match parsed_start.clone() {
+                Ok(start) => Ok(start + 1),
+                Err(parse_error) => Err(parse_error),
+            }
+        };
+
+        let parsed_step = if colon_count == 2 {
+            get_parsed_step(&groups, 1)
+        } else {
+            Ok(1)
+        };
+
+        match (parsed_start, parsed_end, parsed_step) {
+            (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
             _ => Err(error_message),
-        }
-    } else if colon_count == 1 {
-        let raw_start = groups[0];
-        let raw_end = groups[1];
-
-        if raw_end == "" {
-            match raw_start.parse::<i32>() {
-                Ok(start) => Ok((start, n, 1)),
-                _ => Err(error_message),
-            }
-        } else if raw_start == "" {
-            match raw_end.parse::<i32>() {
-                Ok(end) => Ok((0, end, 1)),
-                _ => Err(error_message),
-            }
-        } else {
-            match (raw_start.parse::<i32>(), raw_end.parse::<i32>()) {
-                (Ok(start), Ok(end)) => Ok((start, end, 1)),
-                _ => Err(error_message),
-            }
-        }
-    } else if colon_count == 2 {
-        let raw_start = groups[0];
-        let raw_end = groups[1];
-        let raw_step = groups[2];
-
-        if raw_start == "" && raw_end == "" {
-            match raw_step.parse::<i32>() {
-                Ok(step) => Ok((0, n, step)),
-                _ => Err(error_message),
-            }
-        } else if raw_start == "" && raw_step == "" {
-            match raw_end.parse::<i32>() {
-                Ok(end) => Ok((0, end, 1)),
-                _ => Err(error_message),
-            }
-        } else if raw_end == "" && raw_step == "" {
-            match raw_start.parse::<i32>() {
-                Ok(start) => Ok((start, n, 1)),
-                _ => Err(error_message),
-            }
-        } else if raw_end == "" {
-            match (raw_start.parse::<i32>(), raw_step.parse::<i32>()) {
-                (Ok(start), Ok(step)) => Ok((start, n, step)),
-                _ => Err(error_message),
-            }
-        } else if raw_start == "" {
-            match (raw_end.parse::<i32>(), raw_step.parse::<i32>()) {
-                (Ok(end), Ok(step)) => Ok((0, end, step)),
-                _ => Err(error_message),
-            }
-        } else if raw_step == "" {
-            match (raw_start.parse::<i32>(), raw_end.parse::<i32>()) {
-                (Ok(start), Ok(end)) => Ok((start, end, 1)),
-                _ => Err(error_message),
-            }
-        } else {
-            match (
-                raw_start.parse::<i32>(),
-                raw_end.parse::<i32>(),
-                raw_step.parse::<i32>(),
-            ) {
-                (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
-                _ => Err(error_message),
-            }
         }
     } else {
         Err(error_message)
+    }
+}
+
+fn get_parsed_end(groups: &Vec<&str>, default: i32) -> Result<i32, std::num::ParseIntError> {
+    let raw_end = groups[1];
+
+    if raw_end != "" {
+        raw_end.parse::<i32>()
+    } else {
+        Ok(default)
+    }
+}
+
+fn get_parsed_step(groups: &Vec<&str>, default: i32) -> Result<i32, std::num::ParseIntError> {
+    let raw_step = groups[2];
+
+    if raw_step != "" {
+        raw_step.parse::<i32>()
+    } else {
+        Ok(default)
     }
 }
 
