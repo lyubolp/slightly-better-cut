@@ -1,52 +1,85 @@
 use regex::Regex;
 
 pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
-    let re = Regex::new(r"(-{0,1}[0-9]+)*(:){0,1}(-{0,1}[0-9]+)*(:){0,1}(-{0,1}[0-9]+)*");
+    let groups: Vec<&str> = fields.split(":").collect();
     let error_message = String::from("Can't build regex");
 
-    match re {
-        Ok(reg) => {
-            if !reg.is_match(&fields) {
-                Err(error_message)
-            } else {
-                match reg.captures(fields) {
-                    Some(captures) => {
-                        // TODO - Consider going to named capture groups
-                        let is_first_colon_passed = captures.get(2).is_some();
+    let colon_count = fields.match_indices(":").count();
 
-                        let default_start = 0;
-                        let raw_start = captures
-                            .get(1)
-                            .map_or(Ok(default_start), |m| m.as_str().parse::<i32>());
+    if colon_count == 0 {
+        let raw_start = groups[0];
 
-                        if !is_first_colon_passed {
-                            match raw_start {
-                                Ok(start) => Ok((start, start + 1, 1)),
-                                _ => Err(error_message),
-                            }
-                        } else {
-                            let default_end = n;
-                            let default_step = 1;
+        match raw_start.parse::<i32>() {
+            Ok(start) => Ok((start, start + 1, 1)),
+            _ => Err(error_message),
+        }
+    } else if colon_count == 1 {
+        let raw_start = groups[0];
+        let raw_end = groups[1];
 
-                            let raw_end = captures
-                                .get(3)
-                                .map_or(Ok(default_end), |m| m.as_str().parse::<i32>());
-
-                            let raw_step = captures
-                                .get(5)
-                                .map_or(Ok(default_step), |m| m.as_str().parse::<i32>());
-
-                            match (raw_start, raw_end, raw_step) {
-                                (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
-                                _ => Err(error_message),
-                            }
-                        }
-                    }
-                    None => Err(error_message),
-                }
+        if raw_end == "" {
+            match raw_start.parse::<i32>() {
+                Ok(start) => Ok((start, n, 1)),
+                _ => Err(error_message),
+            }
+        } else if raw_start == "" {
+            match raw_end.parse::<i32>() {
+                Ok(end) => Ok((0, end, 1)),
+                _ => Err(error_message),
+            }
+        } else {
+            match (raw_start.parse::<i32>(), raw_end.parse::<i32>()) {
+                (Ok(start), Ok(end)) => Ok((start, end, 1)),
+                _ => Err(error_message),
             }
         }
-        Err(_) => Err(error_message),
+    } else if colon_count == 2 {
+        let raw_start = groups[0];
+        let raw_end = groups[1];
+        let raw_step = groups[2];
+
+        if raw_start == "" && raw_end == "" {
+            match raw_step.parse::<i32>() {
+                Ok(step) => Ok((0, n, step)),
+                _ => Err(error_message),
+            }
+        } else if raw_start == "" && raw_step == "" {
+            match raw_end.parse::<i32>() {
+                Ok(end) => Ok((0, end, 1)),
+                _ => Err(error_message),
+            }
+        } else if raw_end == "" && raw_step == "" {
+            match raw_start.parse::<i32>() {
+                Ok(start) => Ok((start, n, 1)),
+                _ => Err(error_message),
+            }
+        } else if raw_end == "" {
+            match (raw_start.parse::<i32>(), raw_step.parse::<i32>()) {
+                (Ok(start), Ok(step)) => Ok((start, n, step)),
+                _ => Err(error_message),
+            }
+        } else if raw_start == "" {
+            match (raw_end.parse::<i32>(), raw_step.parse::<i32>()) {
+                (Ok(end), Ok(step)) => Ok((0, end, step)),
+                _ => Err(error_message),
+            }
+        } else if raw_step == "" {
+            match (raw_start.parse::<i32>(), raw_end.parse::<i32>()) {
+                (Ok(start), Ok(end)) => Ok((start, end, 1)),
+                _ => Err(error_message),
+            }
+        } else {
+            match (
+                raw_start.parse::<i32>(),
+                raw_end.parse::<i32>(),
+                raw_step.parse::<i32>(),
+            ) {
+                (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
+                _ => Err(error_message),
+            }
+        }
+    } else {
+        Err(error_message)
     }
 }
 
