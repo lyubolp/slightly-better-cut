@@ -11,16 +11,10 @@ pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
     let colon_count = fields.match_indices(":").count();
 
     if colon_count < 3 {
-        let raw_start = groups[0];
-
-        let parsed_start = if raw_start != "" {
-            raw_start.parse::<i32>()
-        } else {
-            Ok(0)
-        };
+        let parsed_start = get_parsed_item(groups[0], 0);
 
         let parsed_end = if colon_count != 0 {
-            get_parsed_end(&groups, n)
+            get_parsed_item(groups[1], n)
         } else {
             match parsed_start.clone() {
                 Ok(start) => Ok(start + 1),
@@ -29,7 +23,7 @@ pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
         };
 
         let parsed_step = if colon_count == 2 {
-            get_parsed_step(&groups, 1)
+            get_parsed_item(groups[2], 1)
         } else {
             Ok(1)
         };
@@ -43,21 +37,9 @@ pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
     }
 }
 
-fn get_parsed_end(groups: &Vec<&str>, default: i32) -> Result<i32, std::num::ParseIntError> {
-    let raw_end = groups[1];
-
-    if raw_end != "" {
-        raw_end.parse::<i32>()
-    } else {
-        Ok(default)
-    }
-}
-
-fn get_parsed_step(groups: &Vec<&str>, default: i32) -> Result<i32, std::num::ParseIntError> {
-    let raw_step = groups[2];
-
-    if raw_step != "" {
-        raw_step.parse::<i32>()
+fn get_parsed_item(raw_item: &str, default: i32) -> Result<i32, std::num::ParseIntError> {
+    if raw_item != "" {
+        raw_item.parse::<i32>()
     } else {
         Ok(default)
     }
