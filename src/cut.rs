@@ -14,7 +14,8 @@ pub mod cut {
         let n = items.len() as i32;
 
         let is_start_within_bounds = -n <= start && start < n;
-        let is_end_within_bounds = -n <= end && end != 0 && end < n;
+        //TODO - Add test for getting the last field from line
+        let is_end_within_bounds = -n <= end && end != 0 && end <= n;
 
         if !(is_start_within_bounds && is_end_within_bounds) {
             return vec![];
@@ -55,17 +56,19 @@ pub mod cut {
         }
     }
 
-    pub fn cut_line_with_bytes(line: &str, range: (i32, i32, i32)) -> Vec<&str> {
+    pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<&str> {
         unimplemented!()
     }
 
-    pub fn cut_line_with_characters(line: &str, range: (i32, i32, i32)) -> Vec<&str> {
+    pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<&str> {
         unimplemented!()
     }
 }
 
 #[cfg(test)]
 mod test {
+    use crate::range_parser::Range;
+
     use super::cut::cut_line_with_delimiter;
 
     /*
@@ -92,7 +95,7 @@ mod test {
      */
 
     static CONTENT: &str = "first second third fourth fifth";
-    static DELIMITER: char = ' ';
+    static DELIMITER: &str = " ";
 
     static N: i32 = 5 as i32;
 
@@ -499,10 +502,10 @@ mod test {
 
     fn base_test(start: i32, end: i32, step: i32, expected_content: Vec<&str>) {
         // Arrange
-        let range = (start, end, step);
+        let range = Range::new(start, end, step);
 
         // Act
-        let actual_content = cut_line_with_delimiter(CONTENT, range, DELIMITER);
+        let actual_content = cut_line_with_delimiter(CONTENT, range, String::from(DELIMITER));
 
         // Assert
         assert_eq!(expected_content, actual_content);
