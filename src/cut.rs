@@ -1,19 +1,16 @@
 pub mod cut {
+    use crate::range_parser::Range;
     use std::collections::HashSet;
 
-    pub fn cut_line_with_delimiter(
-        line: &str,
-        range: (i32, i32, i32),
-        delimiter: char,
-    ) -> Vec<&str> {
-        let (start, end, step) = range;
+    pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> Vec<&str> {
+        let (start, end, step) = range.to_tuple();
 
         if step == 0 {
             return vec![];
         }
 
         // Do the cutting, and get `n`
-        let items: Vec<&str> = line.split(delimiter).collect();
+        let items: Vec<&str> = line.split(&delimiter).collect();
         let n = items.len() as i32;
 
         let is_start_within_bounds = -n <= start && start < n;
