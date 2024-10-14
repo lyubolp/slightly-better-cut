@@ -5,7 +5,7 @@ mod range_parser;
 use std::fs::File;
 use std::io::{self, BufRead};
 
-use cut::cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
+use cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
 use range_parser::parse_range;
 
 fn main() {
@@ -30,16 +30,41 @@ fn main() {
     );
 
     let delimiter = args.get_one::<String>("delimiter").unwrap().clone();
-    //println!("Actions: {:?}", actions);
-    //println!("Delimiter: {:?}", delimiter);
 
     for line in lines {
-        //println!("{:?}", line);
         let n = line.split(&delimiter).count();
 
         let output = match actions {
-            (Some(fields), _, _) => unimplemented!(),
-            (_, Some(fields), _) => unimplemented!(),
+            (Some(fields), _, _) => {
+                let ranges = parse_range(fields, n);
+
+                match ranges {
+                    Ok(ranges) => {
+                        let items: Vec<String> = ranges
+                            .iter()
+                            .map(|range| cut_line_with_bytes(&line, *range).join(" "))
+                            .collect();
+
+                        items.join(" ")
+                    }
+                    Err(error) => error,
+                }
+            }
+            (_, Some(fields), _) => {
+                let ranges = parse_range(fields, n);
+
+                match ranges {
+                    Ok(ranges) => {
+                        let items: Vec<String> = ranges
+                            .iter()
+                            .map(|range| cut_line_with_characters(&line, *range).join(" "))
+                            .collect();
+
+                        items.join(" ")
+                    }
+                    Err(error) => error,
+                }
+            }
             (_, _, Some(fields)) => {
                 let ranges = parse_range(fields, n);
 
