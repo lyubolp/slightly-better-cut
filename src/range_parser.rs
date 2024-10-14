@@ -1,4 +1,4 @@
-#[derive(Debug, PartialEq, Eq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Range {
     start: i32,
     end: i32,
@@ -9,9 +9,13 @@ impl Range {
     pub fn new(start: i32, end: i32, step: i32) -> Self {
         Range { start, end, step }
     }
+
+    pub fn to_tuple(&self) -> (i32, i32, i32) {
+        (self.start, self.end, self.step)
+    }
 }
 
-pub fn parse_range(input: &String, n: i32) -> Result<Vec<Range>, String> {
+pub fn parse_range(input: &String, n: usize) -> Result<Vec<Range>, String> {
     let ranges = input.split(',');
 
     let mut result = vec![];
@@ -27,7 +31,7 @@ pub fn parse_range(input: &String, n: i32) -> Result<Vec<Range>, String> {
     Ok(result)
 }
 
-fn parse_single_range(field: &str, n: i32) -> Result<Range, String> {
+fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
     let error_message = String::from("Can't build regex");
     if field == "" {
         return Err(error_message);
@@ -41,7 +45,7 @@ fn parse_single_range(field: &str, n: i32) -> Result<Range, String> {
         let parsed_start = get_parsed_item(groups[0], 0);
 
         let parsed_end = if colon_count != 0 {
-            get_parsed_item(groups[1], n)
+            get_parsed_item(groups[1], n as i32)
         } else {
             match parsed_start.clone() {
                 Ok(start) => Ok(start + 1),
@@ -126,10 +130,10 @@ mod test {
     static NEGATIVE_S_PARSED: i32 = -2;
     static POSITIVE_S_DOUBLE_DIGIT_PARSED: i32 = 20;
 
-    static SAMPLE_LENGTH: i32 = 10;
+    static SAMPLE_LENGTH: usize = 10;
 
     static DEFAULT_START: i32 = 0;
-    static DEFAULT_END: i32 = SAMPLE_LENGTH;
+    static DEFAULT_END: i32 = SAMPLE_LENGTH as i32;
     static DEFAULT_STEP: i32 = 1;
 
     static EXPECTED_ERROR: &str = "Can't build regex";
