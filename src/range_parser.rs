@@ -1,6 +1,17 @@
-use regex::Regex;
+#[derive(Debug, PartialEq, Eq)]
+pub struct Range {
+    start: i32,
+    end: i32,
+    step: i32,
+}
 
-pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
+impl Range {
+    pub fn new(start: i32, end: i32, step: i32) -> Self {
+        Range { start, end, step }
+    }
+}
+
+fn parse_single_range(fields: &String, n: i32) -> Result<Range, String> {
     let error_message = String::from("Can't build regex");
     if fields == "" {
         return Err(error_message);
@@ -29,7 +40,7 @@ pub fn parse_range(fields: &String, n: i32) -> Result<(i32, i32, i32), String> {
         };
 
         match (parsed_start, parsed_end, parsed_step) {
-            (Ok(start), Ok(end), Ok(step)) => Ok((start, end, step)),
+            (Ok(start), Ok(end), Ok(step)) => Ok(Range::new(start, end, step)),
             _ => Err(error_message),
         }
     } else {
@@ -47,7 +58,7 @@ fn get_parsed_item(raw_item: &str, default: i32) -> Result<i32, std::num::ParseI
 
 #[cfg(test)]
 mod test {
-    use super::parse_range;
+    use super::{parse_single_range, Range};
     /*
     N:M:S
 
@@ -111,7 +122,11 @@ mod test {
     fn test_01_positive_positive_positive() {
         let fields =
             String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + POSITIVE_S;
-        let expected_range = Ok((POSITIVE_N_PARSED, POSITIVE_M_PARSED, POSITIVE_S_PARSED));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            POSITIVE_M_PARSED,
+            POSITIVE_S_PARSED,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -120,7 +135,11 @@ mod test {
     fn test_02_positive_positive_negative() {
         let fields =
             String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + NEGATIVE_S;
-        let expected_range = Ok((POSITIVE_N_PARSED, POSITIVE_M_PARSED, NEGATIVE_S_PARSED));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            POSITIVE_M_PARSED,
+            NEGATIVE_S_PARSED,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -128,7 +147,11 @@ mod test {
     #[test]
     fn test_03_positive_positive_separator() {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR;
-        let expected_range = Ok((POSITIVE_N_PARSED, POSITIVE_M_PARSED, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            POSITIVE_M_PARSED,
+            DEFAULT_STEP,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -136,7 +159,11 @@ mod test {
     #[test]
     fn test_04_positive_positive() {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M;
-        let expected_range = Ok((POSITIVE_N_PARSED, POSITIVE_M_PARSED, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            POSITIVE_M_PARSED,
+            DEFAULT_STEP,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -144,7 +171,11 @@ mod test {
     #[test]
     fn test_05_positive_negative() {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + NEGATIVE_M;
-        let expected_range = Ok((POSITIVE_N_PARSED, NEGATIVE_M_PARSED, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            NEGATIVE_M_PARSED,
+            DEFAULT_STEP,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -152,7 +183,7 @@ mod test {
     #[test]
     fn test_06_positive_separator() {
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
-        let expected_range = Ok((POSITIVE_N_PARSED, DEFAULT_END, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(POSITIVE_N_PARSED, DEFAULT_END, DEFAULT_STEP));
 
         base_test(&fields, expected_range);
     }
@@ -160,7 +191,11 @@ mod test {
     #[test]
     fn test_07_positive() {
         let fields = String::from("") + POSITIVE_N;
-        let expected_range = Ok((POSITIVE_N_PARSED, POSITIVE_N_PARSED + 1, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            POSITIVE_N_PARSED + 1,
+            DEFAULT_STEP,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -168,7 +203,11 @@ mod test {
     #[test]
     fn test_08_negative() {
         let fields = String::from("") + NEGATIVE_N;
-        let expected_range = Ok((NEGATIVE_N_PARSED, NEGATIVE_N_PARSED + 1, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(
+            NEGATIVE_N_PARSED,
+            NEGATIVE_N_PARSED + 1,
+            DEFAULT_STEP,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -176,7 +215,7 @@ mod test {
     #[test]
     fn test_09_separator_positive() {
         let fields = String::from("") + SEPARATOR + POSITIVE_M;
-        let expected_range = Ok((DEFAULT_START, POSITIVE_M_PARSED, DEFAULT_STEP));
+        let expected_range = Ok(Range::new(DEFAULT_START, POSITIVE_M_PARSED, DEFAULT_STEP));
 
         base_test(&fields, expected_range);
     }
@@ -184,7 +223,7 @@ mod test {
     #[test]
     fn test_10_separator_separator_positive() {
         let fields = String::from("") + SEPARATOR + SEPARATOR + POSITIVE_S;
-        let expected_range = Ok((DEFAULT_START, DEFAULT_END, POSITIVE_S_PARSED));
+        let expected_range = Ok(Range::new(DEFAULT_START, DEFAULT_END, POSITIVE_S_PARSED));
 
         base_test(&fields, expected_range);
     }
@@ -197,7 +236,7 @@ mod test {
             + NEGATIVE_M_DOUBLE_DIGIT
             + SEPARATOR
             + POSITIVE_S_DOUBLE_DIGIT;
-        let expected_range = Ok((
+        let expected_range = Ok(Range::new(
             POSITIVE_N_DOUBLE_DIGIT_PARSED,
             NEGATIVE_M_DOUBLE_DIGIT_PARSED,
             POSITIVE_S_DOUBLE_DIGIT_PARSED,
@@ -209,7 +248,11 @@ mod test {
     #[test]
     fn test_12_positive_separator_separator_positive() {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
-        let expected_range = Ok((POSITIVE_N_PARSED, DEFAULT_END, POSITIVE_S_PARSED));
+        let expected_range = Ok(Range::new(
+            POSITIVE_N_PARSED,
+            DEFAULT_END,
+            POSITIVE_S_PARSED,
+        ));
 
         base_test(&fields, expected_range);
     }
@@ -245,8 +288,8 @@ mod test {
 
         base_test(&fields, expected_range);
     }
-    fn base_test(fields: &String, expected_range: Result<(i32, i32, i32), String>) {
-        let actual_range = parse_range(fields, SAMPLE_LENGTH);
+    fn base_test(fields: &String, expected_range: Result<Range, String>) {
+        let actual_range = parse_single_range(fields, SAMPLE_LENGTH);
 
         assert_eq!(actual_range, expected_range)
     }
