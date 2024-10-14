@@ -1,5 +1,5 @@
 use clap::{arg, Command};
-use clap::{ArgAction, ArgGroup, Parser};
+use clap::{ArgAction, ArgGroup};
 
 pub fn build_cli() -> Command {
     Command::new("sbcut")
