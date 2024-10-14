@@ -11,15 +11,31 @@ impl Range {
     }
 }
 
-fn parse_single_range(fields: &String, n: i32) -> Result<Range, String> {
+pub fn parse_range(input: &String, n: i32) -> Result<Vec<Range>, String> {
+    let ranges = input.split(',');
+
+    let mut result = vec![];
+    for range in ranges {
+        let parse_result = parse_single_range(range, n);
+
+        match parse_result {
+            Ok(range) => result.push(range),
+            Err(error) => return Err(error),
+        };
+    }
+
+    Ok(result)
+}
+
+fn parse_single_range(field: &str, n: i32) -> Result<Range, String> {
     let error_message = String::from("Can't build regex");
-    if fields == "" {
+    if field == "" {
         return Err(error_message);
     }
 
-    let groups: Vec<&str> = fields.split(":").collect();
+    let groups: Vec<&str> = field.split(":").collect();
 
-    let colon_count = fields.match_indices(":").count();
+    let colon_count = field.match_indices(":").count();
 
     if colon_count < 3 {
         let parsed_start = get_parsed_item(groups[0], 0);
