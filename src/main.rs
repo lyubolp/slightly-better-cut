@@ -1,5 +1,5 @@
-mod cut;
 mod cli;
+mod cut;
 mod range_parser;
 
 use std::fs::File;
@@ -23,17 +23,42 @@ fn main() {
 
     let lines: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
 
-    let actions = (args.get_one::<String>("bytes"), args.get_one::<String>("characters"), args.get_one::<String>("fields"));
+    let actions = (
+        args.get_one::<String>("bytes"),
+        args.get_one::<String>("characters"),
+        args.get_one::<String>("fields"),
+    );
 
-    println!("{:?}", actions);
-    let output = match actions {
-        (Some(fields), _, _) => println!("Bytes {}", fields),
-        (_, Some(fields), _) => println!("Characters {}", fields),
-        (_, _, Some(fields)) => {
-            println!("Fields {}", fields);
-            // let range = parse_range(fields);
-            //cut_line_with_delimiter(line, range, delimiter)
-        }
-        _ => unreachable!()
-    };
+    let delimiter = args.get_one::<String>("delimiter").unwrap().clone();
+    //println!("Actions: {:?}", actions);
+    //println!("Delimiter: {:?}", delimiter);
+
+    for line in lines {
+        //println!("{:?}", line);
+        let n = line.split(&delimiter).count();
+
+        let output = match actions {
+            (Some(fields), _, _) => unimplemented!(),
+            (_, Some(fields), _) => unimplemented!(),
+            (_, _, Some(fields)) => {
+                let ranges = parse_range(fields, n);
+
+                match ranges {
+                    Ok(ranges) => {
+                        let items: Vec<String> = ranges
+                            .iter()
+                            .map(|range| {
+                                cut_line_with_delimiter(&line, *range, delimiter.clone()).join(" ")
+                            })
+                            .collect();
+
+                        items.join(" ")
+                    }
+                    Err(error) => error,
+                }
+            }
+            _ => unreachable!(),
+        };
+        println!("{}", output);
+    }
 }
