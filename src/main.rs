@@ -57,7 +57,7 @@ fn main() {
                     Ok(ranges) => {
                         let items: Vec<String> = ranges
                             .iter()
-                            .map(|range| cut_line_with_characters(&line, *range).join(" "))
+                            .map(|range| cut_line_with_characters(&line, *range).iter().collect())
                             .collect();
 
                         items.join(" ")
