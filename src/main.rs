@@ -8,6 +8,16 @@ use std::io::{self, BufRead};
 use cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
 use range_parser::parse_range;
 
+fn handle_bytes(bytes: Vec<u8>) -> String {
+    match String::from_utf8(bytes.clone()) {
+        Ok(result) => result,
+        Err(_) => {
+            let string_representation: Vec<String> =
+                bytes.iter().map(|byte| byte.to_string()).collect();
+            string_representation.join("0x")
+        }
+    }
+}
 fn main() {
     let args = cli::build_cli().get_matches();
 
@@ -42,7 +52,8 @@ fn main() {
                     Ok(ranges) => {
                         let items: Vec<String> = ranges
                             .iter()
-                            .map(|range| cut_line_with_bytes(&line, *range).join(" "))
+                            .map(|range| cut_line_with_bytes(&line, *range))
+                            .map(|bytes| handle_bytes(bytes))
                             .collect();
 
                         items.join(" ")
