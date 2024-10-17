@@ -56,49 +56,39 @@ fn main() {
     let delimiter = args.get_one::<String>("delimiter").unwrap().clone();
 
     for line in lines {
-        let n = line.split(&delimiter).count();
-
         let (cut_type, fields) = cut_information;
 
+        let n = line.split(&delimiter).count();
         let ranges = parse_range(fields, n);
-        let output = match cut_type {
-            CutType::BYTES => match ranges {
-                Ok(ranges) => {
-                    let items: Vec<String> = ranges
-                        .iter()
-                        .map(|range| cut_line_with_bytes(&line, *range))
-                        .map(|bytes| handle_bytes(bytes))
-                        .collect();
 
-                    items.join(" ")
-                }
-                Err(error) => error,
-            },
-            CutType::CHARACTERS => match ranges {
-                Ok(ranges) => {
-                    let items: Vec<String> = ranges
-                        .iter()
-                        .map(|range| cut_line_with_characters(&line, *range).iter().collect())
-                        .collect();
-
-                    items.join(" ")
-                }
-                Err(error) => error,
-            },
-            CutType::FIELDS => match ranges {
-                Ok(ranges) => {
-                    let items: Vec<String> = ranges
-                        .iter()
-                        .map(|range| {
-                            cut_line_with_delimiter(&line, *range, delimiter.clone()).join(" ")
-                        })
-                        .collect();
-
-                    items.join(" ")
-                }
-                Err(error) => error,
-            },
+        let output = match ranges {
+            Ok(ranges) => generate_output(cut_type, ranges, line, &delimiter),
+            Err(error) => error,
         };
         println!("{}", output);
     }
+}
+
+fn generate_output(
+    cut_type: CutType,
+    ranges: Vec<range_parser::Range>,
+    line: String,
+    delimiter: &String,
+) -> String {
+    let ranges_iter = ranges.iter();
+
+    let items: Vec<String> = match cut_type {
+        CutType::BYTES => ranges_iter
+            .map(|range| cut_line_with_bytes(&line, *range))
+            .map(|bytes| handle_bytes(bytes))
+            .collect(),
+        CutType::CHARACTERS => ranges_iter
+            .map(|range| cut_line_with_characters(&line, *range).iter().collect())
+            .collect(),
+        CutType::FIELDS => ranges_iter
+            .map(|range| cut_line_with_delimiter(&line, *range, delimiter.clone()).join(" "))
+            .collect(),
+    };
+
+    items.join(" ")
 }
