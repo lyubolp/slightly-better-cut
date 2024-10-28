@@ -1,7 +1,7 @@
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
-pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> Vec<&str> {
+pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> Vec<String> {
     let (start, end, step) = range.to_tuple();
 
     if step == 0 {
@@ -32,11 +32,102 @@ pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> V
 
     let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
 
-    let mut result: Vec<&str> = items
+    let mut result: Vec<String> = items
         .iter()
         .enumerate()
         .filter(|(index, _)| indexes_to_get.contains(index))
         .map(|(_, item)| *item)
+        .map(|item| String::from(item))
+        .collect();
+
+    if is_reversed {
+        result.reverse();
+    }
+
+    result
+}
+
+pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
+    let (start, end, step) = range.to_tuple();
+
+    if step == 0 {
+        return vec![];
+    }
+
+    // Do the cutting, and get `n`
+    let n = line.len() as i32;
+
+    let is_start_within_bounds = -n <= start && start < n;
+    //TODO - Add test for getting the last field from line
+    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
+
+    if !(is_start_within_bounds && is_end_within_bounds) {
+        return vec![];
+    }
+
+    let actual_start = handle_negative_index(start, n);
+    let actual_end = handle_negative_index(end, n);
+
+    if actual_start >= actual_end {
+        return vec![];
+    }
+
+    let is_reversed = step < 0;
+    let actual_step = step.abs() as usize;
+
+    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+
+    let mut result: Vec<String> = line
+        .bytes()
+        .enumerate()
+        .filter(|(index, _)| indexes_to_get.contains(index))
+        .map(|(_, item)| item)
+        .map(|byte| handle_bytes(byte))
+        .collect();
+
+    if is_reversed {
+        result.reverse();
+    }
+
+    result
+}
+
+pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
+    let (start, end, step) = range.to_tuple();
+
+    if step == 0 {
+        return vec![];
+    }
+
+    // Do the cutting, and get `n`
+    let n = line.len() as i32;
+
+    let is_start_within_bounds = -n <= start && start < n;
+    //TODO - Add test for getting the last field from line
+    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
+
+    if !(is_start_within_bounds && is_end_within_bounds) {
+        return vec![];
+    }
+
+    let actual_start = handle_negative_index(start, n);
+    let actual_end = handle_negative_index(end, n);
+
+    if actual_start >= actual_end {
+        return vec![];
+    }
+
+    let is_reversed = step < 0;
+    let actual_step = step.abs() as usize;
+
+    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+
+    let mut result: Vec<String> = line
+        .chars()
+        .enumerate()
+        .filter(|(index, _)| indexes_to_get.contains(index))
+        .map(|(_, item)| item)
+        .map(|item| String::from(item))
         .collect();
 
     if is_reversed {
@@ -54,92 +145,11 @@ fn handle_negative_index(index: i32, n: i32) -> usize {
     }
 }
 
-pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<u8> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
+fn handle_bytes(byte: u8) -> String {
+    match String::from_utf8(vec![byte]) {
+        Ok(result) => result,
+        Err(_) => byte.to_string() + "0x",
     }
-
-    // Do the cutting, and get `n`
-    let n = line.len() as i32;
-
-    let is_start_within_bounds = -n <= start && start < n;
-    //TODO - Add test for getting the last field from line
-    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-    if !(is_start_within_bounds && is_end_within_bounds) {
-        return vec![];
-    }
-
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-
-    if actual_start >= actual_end {
-        return vec![];
-    }
-
-    let is_reversed = step < 0;
-    let actual_step = step.abs() as usize;
-
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
-
-    let mut result: Vec<u8> = line
-        .bytes()
-        .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
-        .map(|(_, item)| item)
-        .collect();
-
-    if is_reversed {
-        result.reverse();
-    }
-
-    result
-}
-
-pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<char> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
-    }
-
-    // Do the cutting, and get `n`
-    let n = line.len() as i32;
-
-    let is_start_within_bounds = -n <= start && start < n;
-    //TODO - Add test for getting the last field from line
-    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-    if !(is_start_within_bounds && is_end_within_bounds) {
-        return vec![];
-    }
-
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-
-    if actual_start >= actual_end {
-        return vec![];
-    }
-
-    let is_reversed = step < 0;
-    let actual_step = step.abs() as usize;
-
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
-
-    let mut result: Vec<char> = line
-        .chars()
-        .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
-        .map(|(_, item)| item)
-        .collect();
-
-    if is_reversed {
-        result.reverse();
-    }
-
-    result
 }
 
 #[cfg(test)]
