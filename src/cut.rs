@@ -20,17 +20,10 @@ pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> V
         return vec![];
     }
 
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-
-    if actual_start >= actual_end {
-        return vec![];
-    }
-
-    let is_reversed = step < 0;
-    let actual_step = step.abs() as usize;
-
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
+        Some(value) => value,
+        None => return vec![],
+    };
 
     let mut result: Vec<String> = items
         .iter()
@@ -40,7 +33,7 @@ pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> V
         .map(|item| String::from(item))
         .collect();
 
-    if is_reversed {
+    if step < 0 {
         result.reverse();
     }
 
@@ -65,17 +58,10 @@ pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
         return vec![];
     }
 
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-
-    if actual_start >= actual_end {
-        return vec![];
-    }
-
-    let is_reversed = step < 0;
-    let actual_step = step.abs() as usize;
-
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
+        Some(value) => value,
+        None => return vec![],
+    };
 
     let mut result: Vec<String> = line
         .bytes()
@@ -85,7 +71,7 @@ pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
         .map(|byte| handle_bytes(byte))
         .collect();
 
-    if is_reversed {
+    if step < 0 {
         result.reverse();
     }
 
@@ -110,17 +96,10 @@ pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
         return vec![];
     }
 
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-
-    if actual_start >= actual_end {
-        return vec![];
-    }
-
-    let is_reversed = step < 0;
-    let actual_step = step.abs() as usize;
-
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
+        Some(value) => value,
+        None => return vec![],
+    };
 
     let mut result: Vec<String> = line
         .chars()
@@ -130,7 +109,7 @@ pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
         .map(|item| String::from(item))
         .collect();
 
-    if is_reversed {
+    if step < 0 {
         result.reverse();
     }
 
@@ -150,6 +129,17 @@ fn handle_bytes(byte: u8) -> String {
         Ok(result) => result,
         Err(_) => byte.to_string() + "0x",
     }
+}
+
+fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<HashSet<usize>> {
+    let actual_start = handle_negative_index(start, n);
+    let actual_end = handle_negative_index(end, n);
+    if actual_start >= actual_end {
+        return None;
+    }
+    let actual_step = step.abs() as usize;
+    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+    Some(indexes_to_get)
 }
 
 #[cfg(test)]
