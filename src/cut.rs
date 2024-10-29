@@ -2,118 +2,27 @@ use crate::range_parser::Range;
 use std::collections::HashSet;
 
 pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> Vec<String> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
-    }
-
-    // Do the cutting, and get `n`
-    let items: Vec<&str> = line.split(&delimiter).collect();
-    let n = items.len() as i32;
-
-    let is_start_within_bounds = -n <= start && start < n;
-    //TODO - Add test for getting the last field from line
-    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-    if !(is_start_within_bounds && is_end_within_bounds) {
-        return vec![];
-    }
-
-    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
-        Some(value) => value,
-        None => return vec![],
-    };
-
-    let mut result: Vec<String> = items
-        .iter()
-        .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
-        .map(|(_, item)| *item)
+    let items: Vec<String> = line
+        .split(&delimiter)
         .map(|item| String::from(item))
         .collect();
+    let n = items.len() as i32;
 
-    if step < 0 {
-        result.reverse();
-    }
-
-    result
+    cut_line_with(items, range, n)
 }
 
 pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
-    }
-
-    // Do the cutting, and get `n`
+    let items: Vec<String> = line.bytes().map(|byte| handle_bytes(byte)).collect();
     let n = line.len() as i32;
 
-    let is_start_within_bounds = -n <= start && start < n;
-    //TODO - Add test for getting the last field from line
-    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-    if !(is_start_within_bounds && is_end_within_bounds) {
-        return vec![];
-    }
-
-    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
-        Some(value) => value,
-        None => return vec![],
-    };
-
-    let mut result: Vec<String> = line
-        .bytes()
-        .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
-        .map(|(_, item)| item)
-        .map(|byte| handle_bytes(byte))
-        .collect();
-
-    if step < 0 {
-        result.reverse();
-    }
-
-    result
+    cut_line_with(items, range, n)
 }
 
 pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
-    }
-
-    // Do the cutting, and get `n`
+    let items: Vec<String> = line.chars().map(|item| String::from(item)).collect();
     let n = line.len() as i32;
 
-    let is_start_within_bounds = -n <= start && start < n;
-    //TODO - Add test for getting the last field from line
-    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-    if !(is_start_within_bounds && is_end_within_bounds) {
-        return vec![];
-    }
-
-    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
-        Some(value) => value,
-        None => return vec![],
-    };
-
-    let mut result: Vec<String> = line
-        .chars()
-        .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
-        .map(|(_, item)| item)
-        .map(|item| String::from(item))
-        .collect();
-
-    if step < 0 {
-        result.reverse();
-    }
-
-    result
+    cut_line_with(items, range, n)
 }
 
 fn handle_negative_index(index: i32, n: i32) -> usize {
@@ -140,6 +49,41 @@ fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<H
     let actual_step = step.abs() as usize;
     let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
     Some(indexes_to_get)
+}
+fn cut_line_with(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
+    let (start, end, step) = range.to_tuple();
+
+    if step == 0 {
+        return vec![];
+    }
+
+    let is_start_within_bounds = -n <= start && start < n;
+    //TODO - Add test for getting the last field from line
+    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
+
+    if !(is_start_within_bounds && is_end_within_bounds) {
+        return vec![];
+    }
+
+    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
+        Some(value) => value,
+        None => return vec![],
+    };
+
+    //Calculate result
+
+    let mut result: Vec<String> = items
+        .iter()
+        .enumerate()
+        .filter(|(index, _)| indexes_to_get.contains(index))
+        .map(|(_, item)| item.clone())
+        .collect();
+
+    if step < 0 {
+        result.reverse();
+    }
+
+    result
 }
 
 #[cfg(test)]
