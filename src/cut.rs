@@ -8,49 +8,24 @@ pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> V
         .collect();
     let n = items.len() as i32;
 
-    cut_line_with(items, range, n)
+    cut_line(items, range, n)
 }
 
 pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
     let items: Vec<String> = line.bytes().map(|byte| handle_bytes(byte)).collect();
     let n = line.len() as i32;
 
-    cut_line_with(items, range, n)
+    cut_line(items, range, n)
 }
 
 pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
     let items: Vec<String> = line.chars().map(|item| String::from(item)).collect();
     let n = line.len() as i32;
 
-    cut_line_with(items, range, n)
+    cut_line(items, range, n)
 }
 
-fn handle_negative_index(index: i32, n: i32) -> usize {
-    if index >= 0 {
-        index as usize
-    } else {
-        (n + index) as usize
-    }
-}
-
-fn handle_bytes(byte: u8) -> String {
-    match String::from_utf8(vec![byte]) {
-        Ok(result) => result,
-        Err(_) => byte.to_string() + "0x",
-    }
-}
-
-fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<HashSet<usize>> {
-    let actual_start = handle_negative_index(start, n);
-    let actual_end = handle_negative_index(end, n);
-    if actual_start >= actual_end {
-        return None;
-    }
-    let actual_step = step.abs() as usize;
-    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
-    Some(indexes_to_get)
-}
-fn cut_line_with(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
+fn cut_line(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
     let (start, end, step) = range.to_tuple();
 
     if step == 0 {
@@ -70,8 +45,6 @@ fn cut_line_with(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
         None => return vec![],
     };
 
-    //Calculate result
-
     let mut result: Vec<String> = items
         .iter()
         .enumerate()
@@ -84,6 +57,32 @@ fn cut_line_with(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
     }
 
     result
+}
+
+fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<HashSet<usize>> {
+    let actual_start = handle_negative_index(start, n);
+    let actual_end = handle_negative_index(end, n);
+    if actual_start >= actual_end {
+        return None;
+    }
+    let actual_step = step.abs() as usize;
+    let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
+    Some(indexes_to_get)
+}
+
+fn handle_negative_index(index: i32, n: i32) -> usize {
+    if index >= 0 {
+        index as usize
+    } else {
+        (n + index) as usize
+    }
+}
+
+fn handle_bytes(byte: u8) -> String {
+    match String::from_utf8(vec![byte]) {
+        Ok(result) => result,
+        Err(_) => byte.to_string() + "0x",
+    }
 }
 
 #[cfg(test)]
