@@ -1,31 +1,31 @@
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
-pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String) -> Vec<String> {
+pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String, is_showing_complement: bool) -> Vec<String> {
     let items: Vec<String> = line
         .split(&delimiter)
         .map(|item| String::from(item))
         .collect();
     let n = items.len() as i32;
 
-    cut_line(items, range, n)
+    cut_line(items, range, n, is_showing_complement)
 }
 
-pub fn cut_line_with_bytes(line: &str, range: Range) -> Vec<String> {
+pub fn cut_line_with_bytes(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
     let items: Vec<String> = line.bytes().map(|byte| handle_bytes(byte)).collect();
     let n = line.len() as i32;
 
-    cut_line(items, range, n)
+    cut_line(items, range, n, is_showing_complement)
 }
 
-pub fn cut_line_with_characters(line: &str, range: Range) -> Vec<String> {
+pub fn cut_line_with_characters(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
     let items: Vec<String> = line.chars().map(|item| String::from(item)).collect();
     let n = line.len() as i32;
 
-    cut_line(items, range, n)
+    cut_line(items, range, n, is_showing_complement)
 }
 
-fn cut_line(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
+fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: bool) -> Vec<String> {
     let (start, end, step) = range.to_tuple();
 
     if step == 0 {
@@ -48,7 +48,14 @@ fn cut_line(items: Vec<String>, range: Range, n: i32) -> Vec<String> {
     let mut result: Vec<String> = items
         .iter()
         .enumerate()
-        .filter(|(index, _)| indexes_to_get.contains(index))
+        .filter(|(index, _)| {
+            if !is_showing_complement {
+                indexes_to_get.contains(index)
+            }
+            else {
+                !indexes_to_get.contains(index)
+            }
+        })
         .map(|(_, item)| item.clone())
         .collect();
 

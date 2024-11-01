@@ -21,20 +21,23 @@ fn cut_line(
     line: String,
     delimiter: &String,
     output_delimiter: &String,
+    is_showing_complement: bool,
 ) -> String {
     let ranges_iter = ranges.iter();
 
     let items: Vec<String> = match cut_type {
         CutType::BYTES => ranges_iter
-            .map(|range| cut_line_with_bytes(&line, *range))
+            .map(|range| cut_line_with_bytes(&line, *range, is_showing_complement))
             .map(|items| items.join(&output_delimiter))
             .collect(),
         CutType::CHARACTERS => ranges_iter
-            .map(|range| cut_line_with_characters(&line, *range))
+            .map(|range| cut_line_with_characters(&line, *range, is_showing_complement))
             .map(|items| items.join(&output_delimiter))
             .collect(),
         CutType::FIELDS => ranges_iter
-            .map(|range| cut_line_with_delimiter(&line, *range, delimiter.clone()))
+            .map(|range| {
+                cut_line_with_delimiter(&line, *range, delimiter.clone(), is_showing_complement)
+            })
             .map(|items| items.join(&output_delimiter))
             .collect(),
     };
@@ -73,13 +76,14 @@ fn main() {
 
     let delimiter = args.get_one::<String>("delimiter").unwrap().clone();
 
+    let is_showing_complement = args.get_flag("complement");
     for line in lines {
         let (cut_type, fields) = cut_information;
         let n = line.split(&delimiter).count();
         let ranges = parse_range(fields, n);
 
         let output = match ranges {
-            Ok(ranges) => cut_line(cut_type, ranges, line, &delimiter, &String::from(" ")),
+            Ok(ranges) => cut_line(cut_type, ranges, line, &delimiter, &String::from(" "), is_showing_complement),
             Err(error) => error,
         };
         println!("{}", output);
