@@ -19,3 +19,7 @@ coverage: build test_coverage
 
 run *ARGS: build 
     ./target/debug/slightly-better-cut {{ ARGS }}
+
+clean:
+    cargo clean
+    rm cargo-test-*
