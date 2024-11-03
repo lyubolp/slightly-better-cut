@@ -1,6 +1,7 @@
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
+
 pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String, is_showing_complement: bool) -> Vec<String> {
     let items: Vec<String> = line
         .split(&delimiter)
@@ -49,11 +50,11 @@ fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: boo
         .iter()
         .enumerate()
         .filter(|(index, _)| {
-            if !is_showing_complement {
-                indexes_to_get.contains(index)
+            if is_showing_complement {
+                !indexes_to_get.contains(index)
             }
             else {
-                !indexes_to_get.contains(index)
+                indexes_to_get.contains(index)
             }
         })
         .map(|(_, item)| item.clone())
@@ -91,6 +92,7 @@ fn handle_bytes(byte: u8) -> String {
         Err(_) => byte.to_string() + "0x",
     }
 }
+
 
 #[cfg(test)]
 mod cut_line_with_delimiter {
@@ -532,7 +534,7 @@ mod cut_line_with_delimiter {
         let range = Range::new(start, end, step);
 
         // Act
-        let actual_content = cut_line_with_delimiter(CONTENT, range, String::from(DELIMITER));
+        let actual_content = cut_line_with_delimiter(CONTENT, range, String::from(DELIMITER), false);
 
         // Assert
         assert_eq!(expected_content, actual_content);
@@ -978,7 +980,7 @@ mod cut_line_with_characters {
         let range = Range::new(start, end, step);
 
         // Act
-        let actual_content = cut_line_with_characters(CONTENT, range);
+        let actual_content = cut_line_with_characters(CONTENT, range, false);
 
         // Assert
         assert_eq!(expected_content, actual_content);
@@ -989,7 +991,7 @@ mod cut_line_with_characters {
 mod cut_line_with_bytes {
     use crate::range_parser::Range;
 
-    use super::cut_line_with_bytes;
+    use super::{cut_line_with_bytes};
 
     /*
     start values:
@@ -1424,7 +1426,7 @@ mod cut_line_with_bytes {
         let range = Range::new(start, end, step);
 
         // Act
-        let actual_content = cut_line_with_bytes(CONTENT, range);
+        let actual_content = cut_line_with_bytes(CONTENT, range, false);
 
         // Assert
         assert_eq!(expected_content, actual_content);
