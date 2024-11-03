@@ -70,7 +70,7 @@ fn cut_line(
     cut_type: CutType,
     ranges: Vec<range_parser::Range>,
     line: String,
-    delimiter: &String,
+    delimiter: &str,
     output_delimiter: &String,
     is_showing_complement: bool,
 ) -> String {
@@ -79,17 +79,17 @@ fn cut_line(
     let items: Vec<String> = match cut_type {
         CutType::BYTES => ranges_iter
             .map(|range| cut_line_with_bytes(&line, *range, is_showing_complement))
-            .map(|items| items.join(&output_delimiter))
+            .map(|items| items.join(output_delimiter))
             .collect(),
         CutType::CHARACTERS => ranges_iter
             .map(|range| cut_line_with_characters(&line, *range, is_showing_complement))
-            .map(|items| items.join(&output_delimiter))
+            .map(|items| items.join(output_delimiter))
             .collect(),
         CutType::FIELDS => ranges_iter
             .map(|range| {
-                cut_line_with_delimiter(&line, *range, delimiter.clone(), is_showing_complement)
+                cut_line_with_delimiter(&line, *range, delimiter.to_owned(), is_showing_complement)
             })
-            .map(|items| items.join(&output_delimiter))
+            .map(|items| items.join(output_delimiter))
             .collect(),
     };
 

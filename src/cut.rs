@@ -5,7 +5,7 @@ use std::collections::HashSet;
 pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String, is_showing_complement: bool) -> Vec<String> {
     let items: Vec<String> = line
         .split(&delimiter)
-        .map(|item| String::from(item))
+        .map(String::from)
         .collect();
     let n = items.len() as i32;
 
@@ -13,14 +13,14 @@ pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String, is_s
 }
 
 pub fn cut_line_with_bytes(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
-    let items: Vec<String> = line.bytes().map(|byte| handle_bytes(byte)).collect();
+    let items: Vec<String> = line.bytes().map(handle_bytes).collect();
     let n = line.len() as i32;
 
     cut_line(items, range, n, is_showing_complement)
 }
 
 pub fn cut_line_with_characters(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
-    let items: Vec<String> = line.chars().map(|item| String::from(item)).collect();
+    let items: Vec<String> = line.chars().map(String::from).collect();
     let n = line.len() as i32;
 
     cut_line(items, range, n, is_showing_complement)
@@ -73,7 +73,7 @@ fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<H
     if actual_start >= actual_end {
         return None;
     }
-    let actual_step = step.abs() as usize;
+    let actual_step = step.unsigned_abs() as usize;
     let indexes_to_get: HashSet<usize> = (actual_start..actual_end).step_by(actual_step).collect();
     Some(indexes_to_get)
 }
@@ -991,7 +991,7 @@ mod cut_line_with_characters {
 mod cut_line_with_bytes {
     use crate::range_parser::Range;
 
-    use super::{cut_line_with_bytes};
+    use super::cut_line_with_bytes;
 
     /*
     start values:

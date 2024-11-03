@@ -10,12 +10,12 @@ impl Range {
         Range { start, end, step }
     }
 
-    pub fn to_tuple(&self) -> (i32, i32, i32) {
+    pub fn to_tuple(self) -> (i32, i32, i32) {
         (self.start, self.end, self.step)
     }
 }
 
-pub fn parse_range(input: &String, n: usize) -> Result<Vec<Range>, String> {
+pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     let ranges = input.split(',');
 
     let mut result = vec![];
@@ -33,13 +33,13 @@ pub fn parse_range(input: &String, n: usize) -> Result<Vec<Range>, String> {
 
 fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
     let error_message = String::from("Can't build regex");
-    if field == "" {
+    if field.is_empty() {
         return Err(error_message);
     }
 
-    let groups: Vec<&str> = field.split(":").collect();
+    let groups: Vec<&str> = field.split(':').collect();
 
-    let colon_count = field.match_indices(":").count();
+    let colon_count = field.match_indices(':').count();
 
     if colon_count < 3 {
         let parsed_start = get_parsed_item(groups[0], 0);
@@ -69,7 +69,7 @@ fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
 }
 
 fn get_parsed_item(raw_item: &str, default: i32) -> Result<i32, std::num::ParseIntError> {
-    if raw_item != "" {
+    if !raw_item.is_empty() {
         raw_item.parse::<i32>()
     } else {
         Ok(default)
