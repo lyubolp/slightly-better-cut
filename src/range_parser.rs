@@ -32,7 +32,7 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
 }
 
 fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
-    let error_message = String::from("Can't build regex");
+    let error_message = String::from("Invalid range");
     if field.is_empty() {
         return Err(error_message);
     }
