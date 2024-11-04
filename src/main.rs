@@ -42,6 +42,12 @@ fn main() {
     let is_showing_complement = args.get_flag("complement");
     let is_showing_only_delimited_lines = args.get_flag("only_delimited");
 
+    let output_delimiter = match args.get_one::<String>("output_delimiter") {
+        Some(delimiter) => delimiter,
+        None => &delimiter
+    };
+
+
     for line in lines {
         let (cut_type, fields) = cut_information;
 
@@ -52,7 +58,7 @@ fn main() {
         let ranges = parse_range(fields, n);
 
         let output = match ranges {
-            Ok(ranges) => cut_line(cut_type, ranges, line, &delimiter, &String::from(" "), is_showing_complement),
+            Ok(ranges) => cut_line(cut_type, ranges, line, &delimiter, output_delimiter, is_showing_complement),
             Err(error) => error,
         };
         println!("{}", output);
@@ -93,5 +99,5 @@ fn cut_line(
             .collect(),
     };
 
-    items.join(" ")
+    items.join(output_delimiter)
 }
