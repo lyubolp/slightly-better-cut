@@ -3,7 +3,7 @@ mod cut;
 mod range_parser;
 
 use std::fs::File;
-use std::io::{self, BufRead};
+use std::io::{self, BufRead, Read};
 
 use cut::{cut_line_with_bytes, cut_line_with_characters, cut_line_with_delimiter};
 use range_parser::parse_range;
@@ -20,9 +20,23 @@ fn main() {
     }
 
     let file = File::open(file_path).unwrap();
-    let reader = io::BufReader::new(file);
+    let mut reader = io::BufReader::new(file);
 
-    let lines: Vec<String> = reader.lines().map(|l| l.unwrap()).collect();
+    let is_using_nul_as_line_delimiter = args.get_flag("zero_terminated");
+
+    let lines = if is_using_nul_as_line_delimiter {
+        let nul = 0 as char;
+        let mut buf = String::new();
+
+        reader.read_to_string(&mut buf).unwrap();
+
+        let result: Vec<String> = buf.split(nul).map(|item| String::from(item)).collect();
+
+        result
+    }
+    else {
+        reader.lines().map(|l| l.unwrap()).collect()
+    };
 
     let actions = (
         args.get_one::<String>("bytes"),
