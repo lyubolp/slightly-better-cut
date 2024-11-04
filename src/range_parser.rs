@@ -136,7 +136,7 @@ mod parse_single_range_tests {
     static DEFAULT_END: i32 = SAMPLE_LENGTH as i32;
     static DEFAULT_STEP: i32 = 1;
 
-    static EXPECTED_ERROR: &str = "Can't build regex";
+    static EXPECTED_ERROR: &str = "Invalid range";
 
     #[test]
     fn test_01_positive_positive_positive() {
