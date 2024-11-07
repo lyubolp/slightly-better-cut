@@ -19,6 +19,7 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     let ranges = input.split(',');
 
     let mut result = vec![];
+
     for range in ranges {
         let parse_result = parse_single_range(range, n);
 
@@ -310,6 +311,63 @@ mod parse_single_range_tests {
     }
     fn base_test(fields: &String, expected_range: Result<Range, String>) {
         let actual_range = parse_single_range(fields, SAMPLE_LENGTH);
+
+        assert_eq!(actual_range, expected_range)
+    }
+}
+
+#[cfg(test)]
+mod parse_range {
+    // 1 range
+    // 1 invalid range
+    // multiple ranges
+    // multiple ranges with 1 invalid
+
+    use super::{parse_range, parse_single_range, Range};
+
+    static SAMPLE_LENGTH: usize = 10;
+    static SEPARATOR: &str = ",";
+    static SAMPLE_RANGE_1: &str = "0:2";
+    static SAMPLE_RANGE_2: &str = "3:7:1";
+    static SAMPLE_INVALID_RANGE: &str = "asd";
+
+    static EXPECTED_ERROR: &str = "Invalid range";
+
+    #[test]
+    fn test_01_1_range() {
+        let fields = String::from("") + SAMPLE_RANGE_1;
+        let expected_range: Result<Vec<Range>, String> = Ok(vec![parse_single_range(SAMPLE_RANGE_1, 3).unwrap()]);
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_02_1_invalid_range() {
+        let fields = String::from("") + SAMPLE_INVALID_RANGE;
+        let expected_range: Result<Vec<Range>, String> = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_03_multiple_ranges() {
+        let fields = String::from("") + SAMPLE_RANGE_1 + SEPARATOR + SAMPLE_RANGE_2 + SEPARATOR + SAMPLE_RANGE_1;
+        let expected_range: Result<Vec<Range>, String> = Ok(vec![parse_single_range(SAMPLE_RANGE_1, 3).unwrap(), parse_single_range(SAMPLE_RANGE_2, 13).unwrap(), parse_single_range(SAMPLE_RANGE_1, 3).unwrap()]);
+
+        base_test(&fields, expected_range);
+    }
+
+    #[test]
+    fn test_04_multiple_ranges_with_1_invalid() {
+        let fields = String::from("") + SAMPLE_RANGE_1 + SEPARATOR + SAMPLE_RANGE_2 + SEPARATOR + SAMPLE_INVALID_RANGE + SEPARATOR + SAMPLE_RANGE_1;
+        let expected_range: Result<Vec<Range>, String> = Err(String::from(EXPECTED_ERROR));
+
+        base_test(&fields, expected_range);
+    }
+
+
+    fn base_test(fields: &String, expected_range: Result<Vec<Range>, String>) {
+        let actual_range = parse_range(fields, SAMPLE_LENGTH);
 
         assert_eq!(actual_range, expected_range)
     }
