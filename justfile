@@ -13,7 +13,7 @@ test_coverage: build
 push: build lint test
     git push
 
-coverage: build test_coverage
+coverage: test_coverage
     grcov . --binary-path ./target/debug/deps/ -s . -t lcov --branch --ignore-not-existing --ignore '../*' --ignore "/*" -o target/coverage/tests.lcov
     grcov . --binary-path ./target/debug/deps/ -s . -t markdown --branch --ignore-not-existing --ignore '../*' --ignore "/*"
 
@@ -23,3 +23,4 @@ run *ARGS: build
 clean:
     cargo clean
     rm cargo-test-*
+    mkdir -p target/coverage
