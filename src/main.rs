@@ -32,7 +32,7 @@ fn main() {
         0 as char
     };
 
-    let lines: Vec<String> = content.split(pattern_to_split).map(|item| String::from(item)).collect();
+    let mut lines: Vec<String> = content.split(pattern_to_split).map(|item| String::from(item)).collect();
 
     let actions = (
         args.get_one::<String>("bytes"),
@@ -58,10 +58,14 @@ fn main() {
     };
 
 
-    cut_lines(lines, cut_information, is_showing_only_delimited_lines, &delimiter, &output_delimiter, is_showing_complement);
+    cut_lines(&mut lines, cut_information, is_showing_only_delimited_lines, &delimiter, &output_delimiter, is_showing_complement);
 }
 
-fn cut_lines(lines: Vec<String>, cut_information: (CutType, &String), is_showing_only_delimited_lines: bool, delimiter: &String, output_delimiter: &String, is_showing_complement: bool) {
+fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_showing_only_delimited_lines: bool, delimiter: &String, output_delimiter: &String, is_showing_complement: bool) {
+    if lines.last().is_some_and(|line| line == "") {
+        lines.pop();
+    };
+
     for line in lines {
         let (cut_type, fields) = cut_information;
 
@@ -109,7 +113,7 @@ pub enum CutType {
 fn cut_line(
     cut_type: CutType,
     ranges: Vec<range_parser::Range>,
-    line: String,
+    line: &String,
     delimiter: &str,
     output_delimiter: &String,
     is_showing_complement: bool,
@@ -118,16 +122,16 @@ fn cut_line(
 
     let items: Vec<String> = match cut_type {
         CutType::BYTES => ranges_iter
-            .map(|range| cut_line_with_bytes(&line, *range, is_showing_complement))
+            .map(|range| cut_line_with_bytes(line, *range, is_showing_complement))
             .map(|items| items.join(output_delimiter))
             .collect(),
         CutType::CHARACTERS => ranges_iter
-            .map(|range| cut_line_with_characters(&line, *range, is_showing_complement))
+            .map(|range| cut_line_with_characters(line, *range, is_showing_complement))
             .map(|items| items.join(output_delimiter))
             .collect(),
         CutType::FIELDS => ranges_iter
             .map(|range| {
-                cut_line_with_delimiter(&line, *range, delimiter.to_owned(), is_showing_complement)
+                cut_line_with_delimiter(line, *range, delimiter.to_owned(), is_showing_complement)
             })
             .map(|items| items.join(output_delimiter))
             .collect(),
