@@ -53,8 +53,13 @@ fn main() {
     let is_showing_only_delimited_lines = args.get_flag("only_delimited");
 
     let output_delimiter = match args.get_one::<String>("output_delimiter") {
-        Some(delimiter) => delimiter.clone(),
-        None => delimiter.clone()
+        Some(passed_delimiter) => passed_delimiter.clone(),
+        None => {
+            match cut_information {
+                (CutType::FIELDS, _) => delimiter.clone(),
+                _ => String::from("")
+            }
+        }
     };
 
 
@@ -72,7 +77,12 @@ fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_sh
         if cut_type == CutType::FIELDS && is_showing_only_delimited_lines && !line.contains(delimiter) {
             continue;
         }
-        let n = line.split(delimiter).count();
+
+        let n = match cut_information {
+            (CutType::FIELDS, _) => line.split(delimiter).count(),
+            _ => line.len()
+        };
+        // let n = line.split(delimiter).count();
         let ranges = parse_range(fields, n);
 
         let output = match ranges {
