@@ -379,7 +379,7 @@ fn call_cut(arguments: Vec<&str>) -> Result<(String, String, i32), String> {
 }
 
 fn call_sbcut(arguments: Vec<&str>) -> Result<(String, String, i32), String> {
-    call_command("./target/debug/slightly-better-cut", arguments)
+    call_command("./target/debug/sbcut", arguments)
 }
 
 fn call_command(command: &str, arguments: Vec<&str>) -> Result<(String, String, i32), String> {

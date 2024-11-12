@@ -18,7 +18,7 @@ coverage: test_coverage
     grcov . --binary-path ./target/debug/deps/ -s . -t markdown --branch --ignore-not-existing --ignore '../*' --ignore "/*"
 
 run *ARGS: build 
-    ./target/debug/slightly-better-cut {{ ARGS }}
+    ./target/debug/sbcut {{ ARGS }}
 
 clean:
     cargo clean

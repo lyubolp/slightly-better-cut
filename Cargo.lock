@@ -128,7 +128,7 @@ dependencies = [
 ]
 
 [[package]]
-name = "slightly-better-cut"
+name = "sbcut"
 version = "0.1.0"
 dependencies = [
  "clap",
