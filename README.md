@@ -2,7 +2,20 @@
 
 A slightly better implementation of the cut command in Linux.
 
-[![Tests](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml)
+[![Tests](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml)[![GPL-3.0](https://img.shields.io/badge/license-GPL_3.0-blue.svg)](https://github.com/lyubolp/slightly-better-cut/blob/main/LICENSE)
+
+<!--[![Crates.io](https://img.shields.io/crates/v/broot.svg)](https://crates.io/crates/broot)-->
+
+## Install
+
+### From crates.io
+
+### From binary
+
+### From source
+
+1. Clone the repository - `git clone https://github.com/lyubolp/slightly-better-cut`
+2.
 
 ## Synopsis
 
