@@ -18,9 +18,9 @@ use std::process::Command;
 // STDIN
 
 static SINGLE_RANGE_CUT: &str = "2";
-static SINGLE_RANGE_CUT_2: &str = "4";
+static TWO_SINGLE_RANGES_CUT: &str = "2,4";
 static SINGLE_RANGE_SBCUT: &str = "1";
-static SINGLE_RANGE_SBCUT_2: &str = "3";
+static TWO_SINGLE_RANGES_SBCUT: &str = "1,3";
 
 static START_RANGE_CUT: &str = "2-";
 static START_RANGE_SBCUT: &str = "1:";
@@ -512,9 +512,7 @@ fn test_06_2_output_delimiter_two_single_ranges() {
         "-d",
         ",",
         "-f",
-        SINGLE_RANGE_CUT,
-        ",",
-        SINGLE_RANGE_CUT_2,
+        TWO_SINGLE_RANGES_CUT,
         SAMPLE_FILE,
         "--output-delimiter",
         "-",
@@ -523,9 +521,7 @@ fn test_06_2_output_delimiter_two_single_ranges() {
         "-d",
         ",",
         "-f",
-        SINGLE_RANGE_SBCUT,
-        ",",
-        SINGLE_RANGE_SBCUT_2,
+        TWO_SINGLE_RANGES_SBCUT,
         SAMPLE_FILE,
         "--output_delimiter",
         "-",
