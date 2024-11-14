@@ -22,17 +22,18 @@ fn main() {
     }
     let content = content_result.unwrap();
 
-
     let is_using_nul_as_line_delimiter = args.get_flag("zero_terminated");
 
     let pattern_to_split = if !is_using_nul_as_line_delimiter {
         '\n'
-    }
-    else {
+    } else {
         0 as char
     };
 
-    let mut lines: Vec<String> = content.split(pattern_to_split).map(|item| String::from(item)).collect();
+    let mut lines: Vec<String> = content
+        .split(pattern_to_split)
+        .map(|item| String::from(item))
+        .collect();
 
     let actions = (
         args.get_one::<String>("bytes"),
@@ -55,20 +56,33 @@ fn main() {
 
     let output_delimiter = match args.get_one::<String>("output_delimiter") {
         Some(passed_delimiter) => passed_delimiter.clone(),
-        None => {
-            match cut_information {
-                (CutType::FIELDS, _) => delimiter.clone(),
-                _ => String::from("")
-            }
-        }
+        None => match cut_information {
+            (CutType::FIELDS, _) => delimiter.clone(),
+            _ => String::from(""),
+        },
     };
 
-
-    cut_lines(&mut lines, cut_information, is_showing_only_delimited_lines, &delimiter, &output_delimiter, is_showing_complement, is_showing_non_delimited_lines_in_full);
+    cut_lines(
+        &mut lines,
+        cut_information,
+        is_showing_only_delimited_lines,
+        &delimiter,
+        &output_delimiter,
+        is_showing_complement,
+        is_showing_non_delimited_lines_in_full,
+    );
 }
 
 // TODO - Collect args in a struct
-fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_showing_only_delimited_lines: bool, delimiter: &String, output_delimiter: &String, is_showing_complement: bool, is_showing_non_delimited_lines_in_full: bool) {
+fn cut_lines(
+    lines: &mut Vec<String>,
+    cut_information: (CutType, &String),
+    is_showing_only_delimited_lines: bool,
+    delimiter: &String,
+    output_delimiter: &String,
+    is_showing_complement: bool,
+    is_showing_non_delimited_lines_in_full: bool,
+) {
     if lines.last().is_some_and(|line| line == "") {
         lines.pop();
     };
@@ -80,8 +94,7 @@ fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_sh
         if cut_type == CutType::FIELDS && !line.contains(delimiter) {
             if is_showing_only_delimited_lines {
                 continue;
-            }
-            else if is_showing_non_delimited_lines_in_full {
+            } else if is_showing_non_delimited_lines_in_full {
                 println!("{}", line);
                 continue;
             }
@@ -89,13 +102,20 @@ fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_sh
 
         let n = match cut_information {
             (CutType::FIELDS, _) => line.split(delimiter).count(),
-            _ => line.len()
+            _ => line.len(),
         };
         // let n = line.split(delimiter).count();
         let ranges = parse_range(fields, n);
 
         let output = match ranges {
-            Ok(ranges) => cut_line(cut_type, ranges, line, delimiter, output_delimiter, is_showing_complement),
+            Ok(ranges) => cut_line(
+                cut_type,
+                ranges,
+                line,
+                delimiter,
+                output_delimiter,
+                is_showing_complement,
+            ),
             Err(error) => error,
         };
         println!("{}", output);
@@ -108,16 +128,15 @@ fn read_content(file_path: &String, default_file: &String) -> Result<String, Str
         let mut buffer = String::new();
         match io::stdin().read_to_string(&mut buffer) {
             Ok(_) => Ok(buffer),
-            Err(_) => Err(String::from("Can't read input file"))
+            Err(_) => Err(String::from("Can't read input file")),
         }
-    }
-    else {
+    } else {
         // Read from the file
         let file = File::open(file_path).unwrap();
         let mut reader = io::BufReader::new(file);
         match reader.read_to_string(&mut buffer) {
             Ok(_) => Ok(buffer),
-            Err(_) => Err(String::from("Error when reading from stdin"))
+            Err(_) => Err(String::from("Error when reading from stdin")),
         }
     }
 }

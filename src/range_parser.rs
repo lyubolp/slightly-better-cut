@@ -336,7 +336,8 @@ mod parse_range {
     #[test]
     fn test_01_1_range() {
         let fields = String::from("") + SAMPLE_RANGE_1;
-        let expected_range: Result<Vec<Range>, String> = Ok(vec![parse_single_range(SAMPLE_RANGE_1, 3).unwrap()]);
+        let expected_range: Result<Vec<Range>, String> =
+            Ok(vec![parse_single_range(SAMPLE_RANGE_1, 3).unwrap()]);
 
         base_test(&fields, expected_range);
     }
@@ -351,20 +352,35 @@ mod parse_range {
 
     #[test]
     fn test_03_multiple_ranges() {
-        let fields = String::from("") + SAMPLE_RANGE_1 + SEPARATOR + SAMPLE_RANGE_2 + SEPARATOR + SAMPLE_RANGE_1;
-        let expected_range: Result<Vec<Range>, String> = Ok(vec![parse_single_range(SAMPLE_RANGE_1, 3).unwrap(), parse_single_range(SAMPLE_RANGE_2, 13).unwrap(), parse_single_range(SAMPLE_RANGE_1, 3).unwrap()]);
+        let fields = String::from("")
+            + SAMPLE_RANGE_1
+            + SEPARATOR
+            + SAMPLE_RANGE_2
+            + SEPARATOR
+            + SAMPLE_RANGE_1;
+        let expected_range: Result<Vec<Range>, String> = Ok(vec![
+            parse_single_range(SAMPLE_RANGE_1, 3).unwrap(),
+            parse_single_range(SAMPLE_RANGE_2, 13).unwrap(),
+            parse_single_range(SAMPLE_RANGE_1, 3).unwrap(),
+        ]);
 
         base_test(&fields, expected_range);
     }
 
     #[test]
     fn test_04_multiple_ranges_with_1_invalid() {
-        let fields = String::from("") + SAMPLE_RANGE_1 + SEPARATOR + SAMPLE_RANGE_2 + SEPARATOR + SAMPLE_INVALID_RANGE + SEPARATOR + SAMPLE_RANGE_1;
+        let fields = String::from("")
+            + SAMPLE_RANGE_1
+            + SEPARATOR
+            + SAMPLE_RANGE_2
+            + SEPARATOR
+            + SAMPLE_INVALID_RANGE
+            + SEPARATOR
+            + SAMPLE_RANGE_1;
         let expected_range: Result<Vec<Range>, String> = Err(String::from(EXPECTED_ERROR));
 
         base_test(&fields, expected_range);
     }
-
 
     fn base_test(fields: &String, expected_range: Result<Vec<Range>, String>) {
         let actual_range = parse_range(fields, SAMPLE_LENGTH);

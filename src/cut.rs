@@ -1,12 +1,13 @@
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
-
-pub fn cut_line_with_delimiter(line: &str, range: Range, delimiter: String, is_showing_complement: bool) -> Vec<String> {
-    let items: Vec<String> = line
-        .split(&delimiter)
-        .map(String::from)
-        .collect();
+pub fn cut_line_with_delimiter(
+    line: &str,
+    range: Range,
+    delimiter: String,
+    is_showing_complement: bool,
+) -> Vec<String> {
+    let items: Vec<String> = line.split(&delimiter).map(String::from).collect();
     let n = items.len() as i32;
 
     cut_line(items, range, n, is_showing_complement)
@@ -19,7 +20,11 @@ pub fn cut_line_with_bytes(line: &str, range: Range, is_showing_complement: bool
     cut_line(items, range, n, is_showing_complement)
 }
 
-pub fn cut_line_with_characters(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
+pub fn cut_line_with_characters(
+    line: &str,
+    range: Range,
+    is_showing_complement: bool,
+) -> Vec<String> {
     let items: Vec<String> = line.chars().map(String::from).collect();
     let n = line.len() as i32;
 
@@ -43,7 +48,6 @@ fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: boo
             return vec![];
         }
     }
-    
 
     let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
         Some(value) => value,
@@ -56,8 +60,7 @@ fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: boo
         .filter(|(index, _)| {
             if is_showing_complement {
                 !indexes_to_get.contains(index)
-            }
-            else {
+            } else {
                 indexes_to_get.contains(index)
             }
         })
@@ -96,7 +99,6 @@ fn handle_bytes(byte: u8) -> String {
         Err(_) => String::from(format!("{:#02x}", byte)),
     }
 }
-
 
 #[cfg(test)]
 mod cut_line_with_delimiter {
@@ -222,7 +224,13 @@ mod cut_line_with_delimiter {
     #[test]
     fn test_12_start_b_end_b_step_a() {
         // start: [-n; 0), end: (-n; 0), step = 1
-        base_test(START_B, END_B, STEP_A, vec!["second", "third", "fourth"], false)
+        base_test(
+            START_B,
+            END_B,
+            STEP_A,
+            vec!["second", "third", "fourth"],
+            false,
+        )
     }
 
     #[test]
@@ -252,7 +260,13 @@ mod cut_line_with_delimiter {
     #[test]
     fn test_17_start_b_end_b_step_b() {
         // start: [-n; 0), end: (-n; 0), step = -1
-        base_test(START_B, END_B, STEP_B, vec!["fourth", "third", "second"], false)
+        base_test(
+            START_B,
+            END_B,
+            STEP_B,
+            vec!["fourth", "third", "second"],
+            false,
+        )
     }
 
     #[test]
@@ -543,13 +557,25 @@ mod cut_line_with_delimiter {
     #[test]
     fn test_64_start_c_end_d_step_a_complement() {
         // start:[0; end), end: (0; n], step = 1
-        base_test(START_C, END_D, STEP_A, vec!["first", "second", "fourth", "fifth"], true)
+        base_test(
+            START_C,
+            END_D,
+            STEP_A,
+            vec!["first", "second", "fourth", "fifth"],
+            true,
+        )
     }
 
     #[test]
     fn test_65_start_c_end_f_step_c_complement() {
         // start:[0; end), end: (0; n], step = 2
-        base_test(START_C, END_F, STEP_C, vec!["first", "second", "fourth"], true)
+        base_test(
+            START_C,
+            END_F,
+            STEP_C,
+            vec!["first", "second", "fourth"],
+            true,
+        )
     }
 
     #[test]
@@ -561,15 +587,32 @@ mod cut_line_with_delimiter {
     #[test]
     fn test_67_start_e_end_e_step_a_complement() {
         // start: (-inf; -n), end: (0; n], step = 1, start >= end
-        base_test(START_E, END_E, STEP_A, vec!["first", "second", "third", "fourth", "fifth"], true)
+        base_test(
+            START_E,
+            END_E,
+            STEP_A,
+            vec!["first", "second", "third", "fourth", "fifth"],
+            true,
+        )
     }
 
-    fn base_test(start: i32, end: i32, step: i32, expected_content: Vec<&str>, is_showing_complement: bool) {
+    fn base_test(
+        start: i32,
+        end: i32,
+        step: i32,
+        expected_content: Vec<&str>,
+        is_showing_complement: bool,
+    ) {
         // Arrange
         let range = Range::new(start, end, step);
 
         // Act
-        let actual_content = cut_line_with_delimiter(CONTENT, range, String::from(DELIMITER), is_showing_complement);
+        let actual_content = cut_line_with_delimiter(
+            CONTENT,
+            range,
+            String::from(DELIMITER),
+            is_showing_complement,
+        );
 
         // Assert
         assert_eq!(expected_content, actual_content);
@@ -1041,7 +1084,13 @@ mod cut_line_with_characters {
         base_test(START_E, END_E, STEP_A, vec!["a", "b", "c", "d", "e"], true)
     }
 
-    fn base_test(start: i32, end: i32, step: i32, expected_content: Vec<&str>, is_showing_complement: bool) {
+    fn base_test(
+        start: i32,
+        end: i32,
+        step: i32,
+        expected_content: Vec<&str>,
+        is_showing_complement: bool,
+    ) {
         // Arrange
         let range = Range::new(start, end, step);
 
@@ -1527,7 +1576,6 @@ mod cut_line_with_bytes {
 
         println!("{}", content);
 
-        
         // Act
         let actual_content = cut_line_with_bytes(&content, range, false);
 
@@ -1535,7 +1583,13 @@ mod cut_line_with_bytes {
         assert_eq!(vec!["h", "0xc3", "0x80"], actual_content);
     }
 
-    fn base_test(start: i32, end: i32, step: i32, expected_content: Vec<&str>, is_showing_complement: bool) {
+    fn base_test(
+        start: i32,
+        end: i32,
+        step: i32,
+        expected_content: Vec<&str>,
+        is_showing_complement: bool,
+    ) {
         // Arrange
         let range = Range::new(start, end, step);
 
