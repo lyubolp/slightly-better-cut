@@ -48,3 +48,8 @@ Selected input is written in the same order that it is read, and is written exac
 Defaults - `N` = 1, `M` = last character of current line, `S` = 1. `N < M` !
 
 Return all bytes, characters or fields in the range, defined by `N`, `M` and `S`
+
+## Coreutils cut compatibility:
+
+- Indexing
+- `always_show_no_delimited_lines`
