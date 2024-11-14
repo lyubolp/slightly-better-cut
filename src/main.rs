@@ -51,6 +51,7 @@ fn main() {
 
     let is_showing_complement = args.get_flag("complement");
     let is_showing_only_delimited_lines = args.get_flag("only_delimited");
+    let is_showing_non_delimited_lines_in_full = args.get_flag("always_show_no_delimited_lines");
 
     let output_delimiter = match args.get_one::<String>("output_delimiter") {
         Some(passed_delimiter) => passed_delimiter.clone(),
@@ -63,10 +64,11 @@ fn main() {
     };
 
 
-    cut_lines(&mut lines, cut_information, is_showing_only_delimited_lines, &delimiter, &output_delimiter, is_showing_complement);
+    cut_lines(&mut lines, cut_information, is_showing_only_delimited_lines, &delimiter, &output_delimiter, is_showing_complement, is_showing_non_delimited_lines_in_full);
 }
 
-fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_showing_only_delimited_lines: bool, delimiter: &String, output_delimiter: &String, is_showing_complement: bool) {
+// TODO - Collect args in a struct
+fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_showing_only_delimited_lines: bool, delimiter: &String, output_delimiter: &String, is_showing_complement: bool, is_showing_non_delimited_lines_in_full: bool) {
     if lines.last().is_some_and(|line| line == "") {
         lines.pop();
     };
@@ -74,8 +76,15 @@ fn cut_lines(lines: &mut Vec<String>, cut_information: (CutType, &String), is_sh
     for line in lines {
         let (cut_type, fields) = cut_information;
 
-        if cut_type == CutType::FIELDS && is_showing_only_delimited_lines && !line.contains(delimiter) {
-            continue;
+        // TODO - This can be improved
+        if cut_type == CutType::FIELDS && !line.contains(delimiter) {
+            if is_showing_only_delimited_lines {
+                continue;
+            }
+            else if is_showing_non_delimited_lines_in_full {
+                println!("{}", line);
+                continue;
+            }
         }
 
         let n = match cut_information {
