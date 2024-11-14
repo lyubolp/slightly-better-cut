@@ -1,55 +1,47 @@
 use crate::range_parser::Range;
-use std::collections::HashSet;
+use std::{collections::HashSet, hash::Hash};
 
 pub fn cut_line_with_delimiter(
     line: &str,
-    range: Range,
+    ranges: Vec<Range>,
     delimiter: String,
     is_showing_complement: bool,
 ) -> Vec<String> {
     let items: Vec<String> = line.split(&delimiter).map(String::from).collect();
     let n = items.len() as i32;
 
-    cut_line(items, range, n, is_showing_complement)
+    cut_line(items, ranges, n, is_showing_complement)
 }
 
-pub fn cut_line_with_bytes(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
+pub fn cut_line_with_bytes(
+    line: &str,
+    ranges: Vec<Range>,
+    is_showing_complement: bool,
+) -> Vec<String> {
     let items: Vec<String> = line.bytes().map(handle_bytes).collect();
     let n = line.len() as i32;
 
-    cut_line(items, range, n, is_showing_complement)
+    cut_line(items, ranges, n, is_showing_complement)
 }
 
 pub fn cut_line_with_characters(
     line: &str,
-    range: Range,
+    ranges: Vec<Range>,
     is_showing_complement: bool,
 ) -> Vec<String> {
     let items: Vec<String> = line.chars().map(String::from).collect();
     let n = line.len() as i32;
 
-    cut_line(items, range, n, is_showing_complement)
+    cut_line(items, ranges, n, is_showing_complement)
 }
 
-fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: bool) -> Vec<String> {
-    let (start, end, step) = range.to_tuple();
-
-    if step == 0 {
-        return vec![];
-    }
-
-    // TODO - Ugly hack
-    if !is_showing_complement {
-        let is_start_within_bounds = -n <= start && start < n;
-        //TODO - Add test for getting the last field from line
-        let is_end_within_bounds = -n <= end && end != 0 && end <= n;
-
-        if !(is_start_within_bounds && is_end_within_bounds) {
-            return vec![];
-        }
-    }
-
-    let indexes_to_get = match calculate_indexes_to_get(start, n, end, step) {
+fn cut_line(
+    items: Vec<String>,
+    ranges: Vec<Range>,
+    n: i32,
+    is_showing_complement: bool,
+) -> Vec<String> {
+    let indexes_to_get = match calculate_indexes_to_get(&ranges, n) {
         Some(value) => value,
         None => return vec![],
     };
@@ -74,7 +66,41 @@ fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: boo
     result
 }
 
-fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<HashSet<usize>> {
+fn calculate_indexes_to_get(ranges: &Vec<Range>, n: i32) -> Option<HashSet<usize>> {
+    let ranges: Vec<HashSet<usize>> = ranges
+        .iter()
+        .map(|range| calculate_indexes_from_single_range(range, n))
+        .filter(|result| result.is_some())
+        .map(|result| result.unwrap())
+        .collect();
+
+    if ranges.len() > 0 {
+        let mut result: HashSet<usize> = HashSet::new();
+
+        for range in ranges {
+            result.extend(range);
+        }
+
+        Some(result)
+    } else {
+        None
+    }
+}
+
+fn calculate_indexes_from_single_range(range: &Range, n: i32) -> Option<HashSet<usize>> {
+    let (start, end, step) = range.to_tuple();
+
+    if step == 0 {
+        return None;
+    }
+
+    let is_start_within_bounds = -n <= start && start < n;
+    //TODO - Add test for getting the last field from line
+    let is_end_within_bounds = -n <= end && end != 0 && end <= n;
+
+    if !(is_start_within_bounds && is_end_within_bounds) {
+        return None;
+    }
     let actual_start = handle_negative_index(start, n);
     let actual_end = handle_negative_index(end, n);
     if actual_start >= actual_end {
