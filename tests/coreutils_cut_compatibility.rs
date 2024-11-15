@@ -693,7 +693,9 @@ fn call_command(command: &str, arguments: Vec<&str>) -> Result<(String, String, 
     let command_call = Command::new(command).args(arguments).output();
     match command_call {
         Ok(output) => Ok((
-            String::from_utf8(output.stdout).unwrap(),
+            String::from_utf8(output.stdout)
+                .unwrap()
+                .replace(0 as char, "\n"),
             String::from_utf8(output.stderr).unwrap(),
             output.status.code().unwrap(),
         )),
