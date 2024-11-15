@@ -53,3 +53,4 @@ Return all bytes, characters or fields in the range, defined by `N`, `M` and `S`
 
 - Indexing
 - `always_show_no_delimited_lines`
+- `-z` line ending
