@@ -1,3 +1,21 @@
+//! Module, containing the range abstractions
+//!
+//! A range is defined by the following three items:
+//!`N:M:S` - `N` is start, `M` is end (exclusive), `S` is the step.
+//! Defaults - `N` = 1, `M` = last character of current line, `S` = 1.
+//!
+//! `N` should be less than `M`
+//!
+//! The range `1:8:2` would result in indexes `[1, 3, 5, 7]`
+//! ```rust
+//! parse_range("1:8:2", 10) => Range(1, 8, 2)
+//! ```
+//! `Range` is a struct that represents the range, with a start, end and a setp
+//!
+//! Multiple ranges are supported, if they are delimited with `,`
+
+/// Sturct that represents a range
+/// Each range has a start, end and a step
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub struct Range {
     start: i32,
@@ -7,15 +25,22 @@ pub struct Range {
 
 impl Range {
     pub fn new(start: i32, end: i32, step: i32) -> Self {
+        //! Create a new range with a give start, end and step
         Range { start, end, step }
     }
 
     pub fn to_tuple(self) -> (i32, i32, i32) {
+        //! Convert the `Range` object to a tuple
         (self.start, self.end, self.step)
     }
 }
 
 pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
+    //! Convert a string into a collection of `Range` objects
+    //! If the `input` string is not a valid range, an `Err` is returned
+    //!
+    //! Split the string on `,`, and parse each range separetly.
+    //! If one of the ranges is not parsable, the whole input is deemed unparsable.
     let ranges = input.split(',');
 
     let mut result = vec![];
