@@ -24,3 +24,6 @@ clean:
     cargo clean
     rm cargo-test-*
     mkdir -p target/coverage
+
+doc:
+    cargo doc --no-deps
