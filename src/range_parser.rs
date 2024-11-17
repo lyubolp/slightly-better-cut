@@ -41,6 +41,10 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     //!
     //! Split the string on `,` and parse each range separetly.
     //! If one of the ranges is not parsable, the whole input is deemed unparsable.
+    //! 
+    //! ```rust 
+    //! assert_eq!(parse_range("1:8:2,10,-4:-2", 20), Ok(vec![Range::new(1, 8, 2), Range::new(10,11,1), Range(16, 19, 1)])
+    //! ```
     let ranges = input.split(',');
 
     let mut result = vec![];
@@ -58,6 +62,18 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
 }
 
 fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
+    //! Parses a string containing a single range into a `Range` object.
+    //! 
+    //! If the `field` is empty, the function returns an error.
+    //! 
+    //! Parsing is done by splitting the input on `:`.
+    //!     - If the start is not given, set it to 0
+    //!     - If the end is not given, set it to n
+    //!     - If the step is not given ,set it to 1
+    //! 
+    //! ```rust
+    //! assert_eq!(parse_single_range("1:8:2"), Ok(Range::new(1, 8, 2)))
+    //! ```
     let error_message = String::from("Invalid range");
     if field.is_empty() {
         return Err(error_message);
@@ -95,6 +111,8 @@ fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
 }
 
 fn get_parsed_item(raw_item: &str, default: i32) -> Result<i32, std::num::ParseIntError> {
+    //! Extract the value from a string.
+    //! If empty, return default value. Otherwise, return the result of the parse operation.
     if !raw_item.is_empty() {
         raw_item.parse::<i32>()
     } else {
