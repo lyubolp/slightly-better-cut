@@ -10,16 +10,40 @@ A slightly better implementation of the cut command in Linux.
 
 ### From crates.io
 
+TBD
+
 ### From binary
+
+TBD
 
 ### From source
 
+0. Install [Rust](https://www.rust-lang.org/tools/install)
 1. Clone the repository - `git clone https://github.com/lyubolp/slightly-better-cut`
-2.
+2. Build the code - `cargo build -r`
+3. Resulting binary is located under `<repo_dir>/target/release/sbcut`
 
 ## Synopsis
 
-`sbcut OPTION ... [FILE] ..`
+```
+Usage: sbcut [OPTIONS] <--bytes <LIST>|--characters <LIST>|--fields <LIST>> [FILE]
+
+Arguments:
+  [FILE]  [default: -]
+
+Options:
+  -b, --bytes <LIST>
+  -c, --characters <LIST>
+  -d, --delimiter <DELIM>               [default: "\t"]
+  -f, --fields <LIST>
+      --complement
+  -s, --only_delimited
+      --always_show_no_delimited_lines
+      --output_delimiter <DELIM>
+  -z, --zero_terminated
+  -h, --help                            Print help
+  -V, --version                         Print version
+```
 
 ## Description
 
@@ -49,8 +73,24 @@ Defaults - `N` = 1, `M` = last character of current line, `S` = 1. `N < M` !
 
 Return all bytes, characters or fields in the range, defined by `N`, `M` and `S`
 
+## Usage
+
+TBD
+
+## Documentation
+
+TBD
+
 ## Coreutils cut compatibility:
 
 - Indexing
 - `always_show_no_delimited_lines`
 - `-z` line ending
+
+## Contributing
+
+TBD
+
+## Licence
+
+[GPL-3.0](https://choosealicense.com/licenses/gpl-3.0/)
