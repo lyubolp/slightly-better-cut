@@ -39,7 +39,7 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     //! Convert a string into a collection of `Range` objects
     //! If the `input` string is not a valid range, an `Err` is returned
     //!
-    //! Split the string on `,`, and parse each range separetly.
+    //! Split the string on `,` and parse each range separetly.
     //! If one of the ranges is not parsable, the whole input is deemed unparsable.
     let ranges = input.split(',');
 
