@@ -19,12 +19,14 @@ jobs:
         run: cargo build --verbose
 
   unit-tests:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
         run: cargo test --verbose unit_tests
 
   functional-tests:
+    needs: build
     runs-on: ubuntu-latest
     steps:
       - name: Run tests
