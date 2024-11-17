@@ -103,7 +103,7 @@ fn get_parsed_item(raw_item: &str, default: i32) -> Result<i32, std::num::ParseI
 }
 
 #[cfg(test)]
-mod parse_single_range_tests {
+mod unit_tests_parse_single_range {
     use super::{parse_single_range, Range};
     /*
     N:M:S
@@ -342,7 +342,7 @@ mod parse_single_range_tests {
 }
 
 #[cfg(test)]
-mod parse_range {
+mod unit_tests_parse_range {
     // 1 range
     // 1 invalid range
     // multiple ranges

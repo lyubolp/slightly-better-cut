@@ -101,7 +101,7 @@ fn handle_bytes(byte: u8) -> String {
 }
 
 #[cfg(test)]
-mod cut_line_with_delimiter {
+mod unit_tests_cut_line_with_delimiter {
     use crate::range_parser::Range;
 
     use super::cut_line_with_delimiter;
@@ -620,7 +620,7 @@ mod cut_line_with_delimiter {
 }
 
 #[cfg(test)]
-mod cut_line_with_characters {
+mod unit_tests_cut_line_with_characters {
     use crate::range_parser::Range;
 
     use super::cut_line_with_characters;
@@ -1103,7 +1103,7 @@ mod cut_line_with_characters {
 }
 
 #[cfg(test)]
-mod cut_line_with_bytes {
+mod unit_tests_cut_line_with_bytes {
     use crate::range_parser::Range;
 
     use super::cut_line_with_bytes;
