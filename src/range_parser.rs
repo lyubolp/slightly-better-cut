@@ -43,7 +43,7 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     //! If one of the ranges is not parsable, the whole input is deemed unparsable.
     //! 
     //! ```rust 
-    //! assert_eq!(parse_range("1:8:2,10,-4:-2", 20), Ok(vec![Range::new(1, 8, 2), Range::new(10,11,1), Range(16, 19, 1)])
+    //! assert_eq!(parse_range("1:8:2,10,-4:-2", 20),Ok(vec![Range::new(1, 8, 2), Range::new(10,11,1), Range(16, 19, 1)]))
     //! ```
     let ranges = input.split(',');
 
