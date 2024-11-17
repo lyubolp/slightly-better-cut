@@ -13,10 +13,19 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v4
       - name: Build
         run: cargo build --verbose
+
+  unit-tests:
+    runs-on: ubuntu-latest
+    steps:
       - name: Run tests
-        run: cargo test --verbose
+        run: cargo test --verbose unit_tests
+
+  functional-tests:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Run tests
+        run: cargo test --verbose functional_tests
