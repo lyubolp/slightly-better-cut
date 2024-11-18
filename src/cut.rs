@@ -1,3 +1,13 @@
+/// Module containing the three cut methods - via a delimiter, via bytes and via characters.
+/// Each cut function returns the selected items from the line.
+///
+/// `cut_line_with_delimiter` - cut a line based on a range and a delimiter
+/// 
+/// `cut_line_with_character` - cut a line based on a range over the characters
+/// 
+/// `cut_line_with_bytes` - cut a line based on a range over the bytes. 
+/// Treat each byte as UTF-8. If byte is not utf-8 encoded, print it with '0x' as prefix
+
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
@@ -7,6 +17,7 @@ pub fn cut_line_with_delimiter(
     delimiter: String,
     is_showing_complement: bool,
 ) -> Vec<String> {
+    //! Cut the line with a given delimiter, and return the selected range. 
     let items: Vec<String> = line.split(&delimiter).map(String::from).collect();
     let n = items.len() as i32;
 
@@ -14,6 +25,7 @@ pub fn cut_line_with_delimiter(
 }
 
 pub fn cut_line_with_bytes(line: &str, range: Range, is_showing_complement: bool) -> Vec<String> {
+    //! Cut the line and return the selected range of bytes.
     let items: Vec<String> = line.bytes().map(handle_bytes).collect();
     let n = line.len() as i32;
 
@@ -25,6 +37,7 @@ pub fn cut_line_with_characters(
     range: Range,
     is_showing_complement: bool,
 ) -> Vec<String> {
+    //! Cut the line and return the selected range of characters.
     let items: Vec<String> = line.chars().map(String::from).collect();
     let n = line.len() as i32;
 
@@ -32,6 +45,7 @@ pub fn cut_line_with_characters(
 }
 
 fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: bool) -> Vec<String> {
+    //! Return the corresponding items to the range from the group.
     let (start, end, step) = range.to_tuple();
 
     if step == 0 {
@@ -75,6 +89,7 @@ fn cut_line(items: Vec<String>, range: Range, n: i32, is_showing_complement: boo
 }
 
 fn calculate_indexes_to_get(start: i32, n: i32, end: i32, step: i32) -> Option<HashSet<usize>> {
+    //! Calculate the indexes that correspond to the range
     let actual_start = handle_negative_index(start, n);
     let actual_end = handle_negative_index(end, n);
     if actual_start >= actual_end {
