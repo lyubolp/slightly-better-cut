@@ -212,7 +212,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_1_characters_positive_positive_positive() {
+    fn test_02_1_bytes_positive_positive_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -226,7 +226,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_2_characters_positive_positive_negative() {
+    fn test_02_2_bytes_positive_positive_negative() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + NEGATIVE_S;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
@@ -240,7 +240,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_3_characters_positive_positive_separator() {
+    fn test_02_3_bytes_positive_positive_separator() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -258,7 +258,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_4_characters_positive_positive() {
+    fn test_02_4_bytes_positive_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -276,7 +276,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_5_characters_positive_negative() {
+    fn test_02_5_bytes_positive_negative() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + NEGATIVE_M;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -294,7 +294,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_6_characters_positive_separator() {
+    fn test_02_6_bytes_positive_separator() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -312,7 +312,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_7_characters_positive() {
+    fn test_02_7_bytes_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -326,7 +326,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_8_characters_negative() {
+    fn test_02_8_bytes_negative() {
         // Arrange
         let fields = String::from("") + NEGATIVE_N;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -340,7 +340,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_9_characters_separator_positive() {
+    fn test_02_9_bytes_separator_positive() {
         // Arrange
         let fields = String::from("") + SEPARATOR + POSITIVE_M;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -358,7 +358,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_10_characters_separator_separator_positive() {
+    fn test_02_10_bytes_separator_separator_positive() {
         // Arrange
         let fields = String::from("") + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -376,7 +376,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_02_11_characters_positive_separator_positive() {
+    fn test_02_11_bytes_positive_separator_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
@@ -394,7 +394,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_1_characters_positive_positive_positive() {
+    fn test_03_1_fields_positive_positive_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -408,7 +408,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_2_characters_positive_positive_negative() {
+    fn test_03_2_fields_positive_positive_negative() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR + NEGATIVE_S;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -422,7 +422,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_3_characters_positive_positive_separator() {
+    fn test_03_3_fields_positive_positive_separator() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M + SEPARATOR;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -440,7 +440,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_4_characters_positive_positive() {
+    fn test_03_4_fields_positive_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + POSITIVE_M;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -458,7 +458,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_5_characters_positive_negative() {
+    fn test_03_5_fields_positive_negative() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + NEGATIVE_M;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -476,7 +476,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_6_characters_positive_separator() {
+    fn test_03_6_fields_positive_separator() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -494,7 +494,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_7_characters_positive() {
+    fn test_03_7_fields_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -512,7 +512,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_8_characters_negative() {
+    fn test_03_8_fields_negative() {
         // Arrange
         let fields = String::from("") + NEGATIVE_N;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -532,7 +532,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_9_characters_separator_positive() {
+    fn test_03_9_fields_separator_positive() {
         // Arrange
         let fields = String::from("") + SEPARATOR + POSITIVE_M;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -550,7 +550,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_10_characters_separator_separator_positive() {
+    fn test_03_10_fields_separator_separator_positive() {
         // Arrange
         let fields = String::from("") + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
@@ -568,7 +568,7 @@ mod functional_tests_indexing {
     }
     
     #[test]
-    fn test_03_11_characters_positive_separator_positive() {
+    fn test_03_11_fields_positive_separator_positive() {
         // Arrange
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
