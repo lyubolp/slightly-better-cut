@@ -148,7 +148,7 @@ mod functional_tests_indexing {
         // Arrange
         let fields = String::from("") + NEGATIVE_N;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
-        let expected_output = (String::from("a\n0\n0\n0\n"), String::from(""), 0);
+        let expected_output = (String::from("a\n8\n7\n9\n"), String::from(""), 0);
     
         // Act
         let actual_output = call_sbcut(sbcut_arguments);
@@ -330,7 +330,7 @@ mod functional_tests_indexing {
         // Arrange
         let fields = String::from("") + NEGATIVE_N;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
-        let expected_output = (String::from("a\n0\n0\n0\n"), String::from(""), 0);
+        let expected_output = (String::from("a\n8\n7\n9\n"), String::from(""), 0);
     
         // Act
         let actual_output = call_sbcut(sbcut_arguments);
