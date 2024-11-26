@@ -99,7 +99,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + NEGATIVE_M;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("D,Name,Age,Email,City,Country,Occupation,Sala\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,800\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,750\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90\n"),
+            String::from("D,Name,Age,Email,City,Country,Occupation,Sal\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90\n"),
             String::from(""),
             0,
         );
@@ -117,7 +117,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("D,Name,Age,Email,City,Country,Occupation,Salary\r\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\r\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\r\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
+            String::from("D,Name,Age,Email,City,Country,Occupation,Salary\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
             String::from(""),
             0,
         );
@@ -181,7 +181,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("I,aeAeEalCt,onr,cuainSlr\r\n1Jh o,8jh.o@xml.o,e okUASfwr nier800\n2Jn mt,4jn.mt@xml.o,o nee,S,aaAayt700\n3BbJhsn4,o.ono@xml.o,hcg,S,rjc aae,00\n"),
+            String::from("I,aeAeEalCt,onr,cuainSlr\n1Jh o,8jh.o@xml.o,e okUASfwr nier800\n2Jn mt,4jn.mt@xml.o,o nee,S,aaAayt700\n3BbJhsn4,o.ono@xml.o,hcg,S,rjc aae,00\n"),
             String::from(""),
             0,
         );
@@ -199,7 +199,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-c", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("DNm,g,mi,iyCutyOcpto,aay\n,onDe2,ondeeapecmNwYr,S,otaeEgne,00\r\n,aeSih3,aesiheapecmLsAglsUADt nls,50\r\n,o ono,5bbjhsneapecmCiaoUAPoetMngr900\n"),
+            String::from("DNm,g,mi,iyCutyOcpto,aay\n,onDe2,ondeeapecmNwYr,S,otaeEgne,00\n,aeSih3,aesiheapecmLsAglsUADt nls,50\n,o ono,5bbjhsneapecmCiaoUAPoetMngr900\n"),
             String::from(""),
             0,
         );
@@ -281,7 +281,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + NEGATIVE_M;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("D,Name,Age,Email,City,Country,Occupation,Sala\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,800\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,750\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90\n"),
+            String::from("D,Name,Age,Email,City,Country,Occupation,Sal\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90\n"),
             String::from(""),
             0,
         );
@@ -299,7 +299,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("D,Name,Age,Email,City,Country,Occupation,Salary\r\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\r\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\r\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
+            String::from("D,Name,Age,Email,City,Country,Occupation,Salary\n,John Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\n,Jane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\n,Bob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
             String::from(""),
             0,
         );
@@ -363,7 +363,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("I,aeAeEalCt,onr,cuainSlr\r\n1Jh o,8jh.o@xml.o,e okUASfwr nier800\n2Jn mt,4jn.mt@xml.o,o nee,S,aaAayt700\n3BbJhsn4,o.ono@xml.o,hcg,S,rjc aae,00\n"),
+            String::from("I,aeAeEalCt,onr,cuainSlr\n1Jh o,8jh.o@xml.o,e okUASfwr nier800\n2Jn mt,4jn.mt@xml.o,o nee,S,aaAayt700\n3BbJhsn4,o.ono@xml.o,hcg,S,rjc aae,00\n"),
             String::from(""),
             0,
         );
@@ -381,7 +381,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-b", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("DNm,g,mi,iyCutyOcpto,aay\n,onDe2,ondeeapecmNwYr,S,otaeEgne,00\r\n,aeSih3,aesiheapecmLsAglsUADt nls,50\r\n,o ono,5bbjhsneapecmCiaoUAPoetMngr900\n"),
+            String::from("DNm,g,mi,iyCutyOcpto,aay\n,onDe2,ondeeapecmNwYr,S,otaeEgne,00\n,aeSih3,aesiheapecmLsAglsUADt nls,50\n,o ono,5bbjhsneapecmCiaoUAPoetMngr900\n"),
             String::from(""),
             0,
         );
@@ -481,7 +481,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("Name,Age,Email,City,Country,Occupation,Salary\r\nJohn Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\r\nJane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\r\nBob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
+            String::from("Name,Age,Email,City,Country,Occupation,Salary\nJohn Doe,28,john.doe@example.com,New York,USA,Software Engineer,80000\nJane Smith,34,jane.smith@example.com,Los Angeles,USA,Data Analyst,75000\nBob Johnson,45,bob.johnson@example.com,Chicago,USA,Project Manager,90000\n"),
             String::from(""),
             0,
         );
@@ -573,7 +573,7 @@ mod functional_tests_indexing {
         let fields = String::from("") + POSITIVE_N + SEPARATOR + SEPARATOR + POSITIVE_S;
         let sbcut_arguments = vec!["-d", ",", "-f", &fields, SAMPLE_FILE];
         let expected_output = (
-            String::from("Name,Email,Country,Salary\r\nJohn Doe,john.doe@example.com,USA,80000\r\nJane Smith,jane.smith@example.com,USA,75000\r\nBob Johnson,bob.johnson@example.com,USA,90000\n"),
+            String::from("Name,Email,Country,Salary\nJohn Doe,john.doe@example.com,USA,80000\nJane Smith,jane.smith@example.com,USA,75000\nBob Johnson,bob.johnson@example.com,USA,90000\n"),
             String::from(""),
             0,
         );
