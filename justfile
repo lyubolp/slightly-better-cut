@@ -5,7 +5,8 @@ lint:
     cargo clippy
 
 test: build
-    cargo test
+    cargo test --verbose unit_tests
+    cargo test --verbose functional_tests
 
 test_coverage: build
     CARGO_INCREMENTAL=0 RUSTFLAGS='-Cinstrument-coverage' LLVM_PROFILE_FILE='cargo-test-%p-%m.profraw' cargo test
