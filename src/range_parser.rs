@@ -41,8 +41,8 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
     //!
     //! Split the string on `,` and parse each range separetly.
     //! If one of the ranges is not parsable, the whole input is deemed unparsable.
-    //! 
-    //! ```rust 
+    //!
+    //! ```rust
     //! assert_eq!(parse_range("1:8:2,10,-4:-2", 20),Ok(vec![Range::new(1, 8, 2), Range::new(10,11,1), Range(16, 19, 1)]))
     //! ```
     let ranges = input.split(',');
@@ -63,14 +63,14 @@ pub fn parse_range(input: &str, n: usize) -> Result<Vec<Range>, String> {
 
 fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
     //! Parses a string containing a single range into a `Range` object.
-    //! 
+    //!
     //! If the `field` is empty, the function returns an error.
-    //! 
+    //!
     //! Parsing is done by splitting the input on `:`.
     //!     - If the start is not given, set it to 0
     //!     - If the end is not given, set it to n
     //!     - If the step is not given ,set it to 1
-    //! 
+    //!
     //! ```rust
     //! assert_eq!(parse_single_range("1:8:2"), Ok(Range::new(1, 8, 2)))
     //! ```
@@ -90,7 +90,13 @@ fn parse_single_range(field: &str, n: usize) -> Result<Range, String> {
             get_parsed_item(groups[1], n as i32)
         } else {
             match parsed_start.clone() {
-                Ok(start) => Ok(start + 1),
+                Ok(start) => {
+                    if start == -1 {
+                        Ok(n as i32)
+                    } else {
+                        Ok(start + 1)
+                    }
+                }
                 Err(parse_error) => Err(parse_error),
             }
         };
@@ -352,9 +358,19 @@ mod unit_tests_parse_single_range {
 
         base_test(&fields, expected_range);
     }
+
+    #[test]
+    fn test_17_negative_one() {
+        let fields = String::from("") + "-1";
+        let expected_range = Ok(Range::new(-1, SAMPLE_LENGTH as i32, DEFAULT_STEP));
+
+        base_test(&fields, expected_range);
+    }
+
     fn base_test(fields: &String, expected_range: Result<Range, String>) {
         let actual_range = parse_single_range(fields, SAMPLE_LENGTH);
 
+        println!("Actual:   {:?}", actual_range);
         assert_eq!(actual_range, expected_range)
     }
 }
