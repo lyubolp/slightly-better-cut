@@ -2,7 +2,8 @@
 
 A slightly better implementation of the cut command in Linux.
 
-[![Tests](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml/badge.svg?branch=main)](https://github.com/lyubolp/slightly-better-cut/actions/workflows/test.yml)[![GPL-3.0](https://img.shields.io/badge/license-GPL_3.0-blue.svg)](https://github.com/lyubolp/slightly-better-cut/blob/main/LICENSE)
+
+[![Tests](https://github.com/lyubolp/slightly-better-cut/actions/workflows/tests.yml/badge.svg)](https://github.com/lyubolp/slightly-better-cut/actions/workflows/tests.yml)[![GPL-3.0](https://img.shields.io/badge/license-GPL_3.0-blue.svg)](https://github.com/lyubolp/slightly-better-cut/blob/main/LICENSE)
 
 <!--[![Crates.io](https://img.shields.io/crates/v/broot.svg)](https://crates.io/crates/broot)-->
 
