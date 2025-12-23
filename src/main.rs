@@ -32,7 +32,7 @@ fn main() {
 
     let mut lines: Vec<String> = content
         .split(pattern_to_split)
-        .map(|item| String::from(item))
+        .map(String::from)
         .collect();
 
     let actions = (
@@ -83,7 +83,7 @@ fn cut_lines(
     is_showing_complement: bool,
     is_showing_non_delimited_lines_in_full: bool,
 ) {
-    if lines.last().is_some_and(|line| line == "") {
+    if lines.last().is_some_and(|line| line.is_empty()) {
         lines.pop();
     };
 

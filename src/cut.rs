@@ -111,7 +111,7 @@ fn handle_negative_index(index: i32, n: i32) -> usize {
 fn handle_bytes(byte: u8) -> String {
     match String::from_utf8(vec![byte]) {
         Ok(result) => result,
-        Err(_) => String::from(format!("{:#02x}", byte)),
+        Err(_) => format!("{:#02x}", byte),
     }
 }
 
