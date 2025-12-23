@@ -370,7 +370,6 @@ mod unit_tests_parse_single_range {
     fn base_test(fields: &String, expected_range: Result<Range, String>) {
         let actual_range = parse_single_range(fields, SAMPLE_LENGTH);
 
-        println!("Actual:   {:?}", actual_range);
         assert_eq!(actual_range, expected_range)
     }
 }
