@@ -2,12 +2,11 @@
 /// Each cut function returns the selected items from the line.
 ///
 /// `cut_line_with_delimiter` - cut a line based on a range and a delimiter
-/// 
+///
 /// `cut_line_with_character` - cut a line based on a range over the characters
-/// 
-/// `cut_line_with_bytes` - cut a line based on a range over the bytes. 
+///
+/// `cut_line_with_bytes` - cut a line based on a range over the bytes.
 /// Treat each byte as UTF-8. If byte is not utf-8 encoded, print it with '0x' as prefix
-
 use crate::range_parser::Range;
 use std::collections::HashSet;
 
@@ -17,7 +16,7 @@ pub fn cut_line_with_delimiter(
     delimiter: String,
     is_showing_complement: bool,
 ) -> Vec<String> {
-    //! Cut the line with a given delimiter, and return the selected range. 
+    //! Cut the line with a given delimiter, and return the selected range.
     let items: Vec<String> = line.split(&delimiter).map(String::from).collect();
     let n = items.len() as i32;
 

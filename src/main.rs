@@ -30,10 +30,7 @@ fn main() {
         0 as char
     };
 
-    let mut lines: Vec<String> = content
-        .split(pattern_to_split)
-        .map(String::from)
-        .collect();
+    let mut lines: Vec<String> = content.split(pattern_to_split).map(String::from).collect();
 
     let actions = (
         args.get_one::<String>("bytes"),
@@ -79,7 +76,7 @@ fn cut_lines(
     cut_information: (CutType, &String),
     is_showing_only_delimited_lines: bool,
     delimiter: &String,
-    output_delimiter: &String,
+    output_delimiter: &str,
     is_showing_complement: bool,
     is_showing_non_delimited_lines_in_full: bool,
 ) {
@@ -151,9 +148,9 @@ pub enum CutType {
 fn cut_line(
     cut_type: CutType,
     ranges: Vec<range_parser::Range>,
-    line: &String,
+    line: &str,
     delimiter: &str,
-    output_delimiter: &String,
+    output_delimiter: &str,
     is_showing_complement: bool,
 ) -> String {
     let ranges_iter = ranges.iter();
