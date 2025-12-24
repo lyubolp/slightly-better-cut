@@ -1,9 +1,13 @@
 [package]
 name = "sbcut"
+description = "A slightly better implementation of the cut command in Linux with Python-style indexing"
 version = "1.0.1"
 edition = "2021"
-
-# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+license = "GPL-3.0-only"
+repository = "https://github.com/lyubolp/slightly-better-cut"
+readme = "README.md"
+keywords = ["cli", "terminal", "utility"]
+categories = ["command-line-utilities", "filesystem", ]
 
 [dependencies]
 clap = { version = "4.0", features = ["derive"] }
